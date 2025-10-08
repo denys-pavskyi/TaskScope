@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using TaskScope.DAL.Persistence;
+
 namespace TaskScope.API
 {
     public class Program
@@ -7,7 +10,8 @@ namespace TaskScope.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            builder.Services.AddDbContext<TaskScopeDbContext>(options =>
+                options.UseSqlServer(builder.Configuration["ConnectionStrings:MsSqlServer"]));
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
