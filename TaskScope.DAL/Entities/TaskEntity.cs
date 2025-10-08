@@ -1,9 +1,11 @@
-﻿using TaskScope.DAL.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using TaskScope.DAL.Enums;
 
 namespace TaskScope.DAL.Entities;
 
 public class TaskEntity
 {
+    [Key]
     public Guid Id { get; set; }
     public string Title { get; set; } = null!;
     public string? Description { get; set; }

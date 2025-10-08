@@ -20,5 +20,18 @@ public class TaskScopeDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+
+        modelBuilder.Entity<TaskEntityTag>()
+            .HasKey(tt => new { tt.TaskId, tt.TagId });
+
+        modelBuilder.Entity<TaskEntityTag>()
+            .HasOne(tt => tt.Task)
+            .WithMany(t => t.TaskTags)
+            .HasForeignKey(tt => tt.TaskId);
+
+        modelBuilder.Entity<TaskEntityTag>()
+            .HasOne(tt => tt.Tag)
+            .WithMany(t => t.TaskTags)
+            .HasForeignKey(tt => tt.TagId);
     }
 }

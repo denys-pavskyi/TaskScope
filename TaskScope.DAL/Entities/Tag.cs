@@ -1,7 +1,10 @@
-﻿namespace TaskScope.DAL.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TaskScope.DAL.Entities;
 
 public class Tag
 {
+    [Key]
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;
     public string? Color { get; set; }
