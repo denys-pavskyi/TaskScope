@@ -14,5 +14,5 @@ public class TaskEntity
     public DateTime UpdatedAt { get; set; }
     public DateTime? CompletedAt { get; set; }
 
-    public ICollection<TaskTag> TaskTags { get; set; } = new List<TaskTag>();
+    public ICollection<TaskEntityTag> TaskTags { get; set; } = new List<TaskEntityTag>();
 }
