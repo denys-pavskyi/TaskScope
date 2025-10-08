@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
 
-namespace TaskScope.DAL.Repositories.Interfaces;
+namespace TaskScope.DAL.Repositories.Interfaces.Base;
 
 public interface IRepositoryBase<T>
     where T : class
