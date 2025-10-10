@@ -1,5 +1,7 @@
 
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using TaskScope.BLL.Others;
 using TaskScope.DAL.Persistence;
 
 namespace TaskScope.API
@@ -12,6 +14,11 @@ namespace TaskScope.API
 
             builder.Services.AddDbContext<TaskScopeDbContext>(options =>
                 options.UseSqlServer(builder.Configuration["ConnectionStrings:MsSqlServer"]));
+
+            builder.Services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<MapperProfile>();
+            }, AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

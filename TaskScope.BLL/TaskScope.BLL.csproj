@@ -33,4 +33,13 @@
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="MediatR\Users\" />
+    <Folder Include="MediatR\Tags\" />
+    <Folder Include="MediatR\Tasks\GetAllByUserId\" />
+    <Folder Include="MediatR\Tasks\Update\" />
+    <Folder Include="Models\Dtos\Tags\" />
+    <Folder Include="Others\" />
+  </ItemGroup>
+
 </Project>

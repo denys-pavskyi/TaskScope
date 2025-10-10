@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TaskScope.BLL.Models.Dtos.Tags;
+using TaskScope.DAL.Entities;
 using TaskScope.DAL.Enums;
 
-namespace TaskScope.DAL.Entities;
+namespace TaskScope.BLL.Models.Dtos.Tasks;
 
-public class TaskEntity
+public class TaskEntityDto
 {
-    [Key]
     public Guid Id { get; set; }
     public string Title { get; set; } = null!;
     public string? Description { get; set; }
@@ -14,5 +15,5 @@ public class TaskEntity
     public DateTime? DueDate { get; set; }
     public DateTime? CompletedAt { get; set; }
 
-    public ICollection<TaskEntityTag> TaskTags { get; set; } = new List<TaskEntityTag>();
+    public List<TagDto> Tags { get; set; } = new();
 }

@@ -33,5 +33,17 @@ public class TaskScopeDbContext : DbContext
             .HasOne(tt => tt.Tag)
             .WithMany(t => t.TaskTags)
             .HasForeignKey(tt => tt.TagId);
+
+        modelBuilder.Entity<TaskEntity>()
+            .HasMany(t => t.TaskTags)
+            .WithOne(t => t.Task)
+            .HasForeignKey(tt => tt.TaskId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Tag>()
+            .HasMany(t => t.TaskTags)
+            .WithOne(tt => tt.Tag)
+            .HasForeignKey(tt => tt.TagId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
