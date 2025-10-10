@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="MediatR\Tags\NewFolder\**" />
+    <EmbeddedResource Remove="MediatR\Tags\NewFolder\**" />
+    <None Remove="MediatR\Tags\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TaskScope.DAL\TaskScope.DAL.csproj" />
   </ItemGroup>
 
@@ -34,10 +40,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="MediatR\Tags\Delete\" />
     <Folder Include="MediatR\Users\" />
-    <Folder Include="MediatR\Tags\" />
-    <Folder Include="MediatR\Tasks\GetAllByUserId\" />
-    <Folder Include="MediatR\Tasks\Update\" />
     <Folder Include="Models\Dtos\Tags\" />
     <Folder Include="Others\" />
   </ItemGroup>

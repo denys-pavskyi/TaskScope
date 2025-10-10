@@ -20,6 +20,9 @@ namespace TaskScope.API
                 cfg.AddProfile<MapperProfile>();
             }, AppDomain.CurrentDomain.GetAssemblies());
 
+            var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(currentAssemblies));
+
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
