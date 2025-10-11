@@ -1,6 +1,8 @@
-﻿namespace TaskScope.BLL.MediatR.Tasks.GetAllByUserId;
+﻿using FluentResults;
+using MediatR;
+using TaskScope.BLL.Models.Dtos.Tasks;
 
-public class GetAllTasksByUserIdQuery
-{
-    
-}
+namespace TaskScope.BLL.MediatR.Tasks.GetAllByUserId;
+
+public record GetTasksByUserIdQuery(Guid UserId, DateTime? StartDate, DateTime? EndDate)
+    : IRequest<Result<IEnumerable<TaskEntityDto>>>;
