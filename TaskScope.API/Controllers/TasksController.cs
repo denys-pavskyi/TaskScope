@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskScope.BLL.MediatR.Tasks.GetAllByUserId;
 using TaskScope.BLL.MediatR.Tasks.GetTaskById;
+using TaskScope.BLL.MediatR.Tasks.GetTasksByTag;
 
 namespace TaskScope.API.Controllers
 {
@@ -35,6 +36,19 @@ namespace TaskScope.API.Controllers
 
             if (result.IsFailed || resultValue == null)
                 return NotFound();
+
+            return Ok(resultValue);
+        }
+
+        [HttpGet("tag/{tagId:guid}/user/{userId:guid}")]
+        public async Task<IActionResult> GetByTag(Guid tagId, Guid userId, CancellationToken cancellationToken)
+        {
+            var query = new GetTasksByTagQuery(userId, tagId);
+            var result = await Mediator.Send(query, cancellationToken);
+            var resultValue = result.ValueOrDefault;
+
+            if (resultValue is null || !resultValue.Any())
+                return NoContent();
 
             return Ok(resultValue);
         }

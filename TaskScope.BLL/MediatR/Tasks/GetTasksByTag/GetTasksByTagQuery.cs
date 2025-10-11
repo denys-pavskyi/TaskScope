@@ -1,6 +1,7 @@
-﻿namespace TaskScope.BLL.MediatR.Tasks.GetTasksByTag;
+﻿using FluentResults;
+using MediatR;
+using TaskScope.BLL.Models.Dtos.Tasks;
 
-public class GetTasksByTagQuery
-{
-    
-}
+namespace TaskScope.BLL.MediatR.Tasks.GetTasksByTag;
+
+public record GetTasksByTagQuery(Guid UserId, Guid TagId) : IRequest<Result<IEnumerable<TaskEntityDto>>>;
