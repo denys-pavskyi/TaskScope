@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaskScope.BLL.MediatR.Tasks.GetAllByUserId;
+using TaskScope.BLL.MediatR.Tasks.GetTaskById;
 
 namespace TaskScope.API.Controllers
 {
@@ -20,12 +20,23 @@ namespace TaskScope.API.Controllers
             var result = await Mediator.Send(query, cancellationToken);
             var resultValue = result.ValueOrDefault;
 
-
             if (resultValue is null || !resultValue.Any())
                 return NoContent();
 
             return Ok(resultValue);
         }
 
+        [HttpGet("{taskId:guid}")]
+        public async Task<IActionResult> GetById(Guid taskId, CancellationToken cancellationToken)
+        {
+            var query = new GetTaskByIdQuery(taskId);
+            var result = await Mediator.Send(query, cancellationToken);
+            var resultValue = result.ValueOrDefault;
+
+            if (result.IsFailed || resultValue == null)
+                return NotFound();
+
+            return Ok(resultValue);
+        }
     }
 }

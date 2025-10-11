@@ -1,6 +1,7 @@
-﻿namespace TaskScope.BLL.MediatR.Tasks.GetTaskById;
+﻿using FluentResults;
+using MediatR;
+using TaskScope.BLL.Models.Dtos.Tasks;
 
-public class GetTaskByIdQuery
-{
-    
-}
+namespace TaskScope.BLL.MediatR.Tasks.GetTaskById;
+
+public record GetTaskByIdQuery(Guid TaskId) : IRequest<Result<TaskEntityDto>>;
