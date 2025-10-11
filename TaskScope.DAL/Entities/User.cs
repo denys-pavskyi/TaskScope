@@ -23,4 +23,7 @@ public class User
     public string Provider { get; set; } = "Local"; // "Local"/"Google"
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public ICollection<TaskEntity> Tasks { get; set; } = new List<TaskEntity>();
+    public ICollection<Tag> Tags { get; set; } = new List<Tag>();
 }
