@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\TaskScope.BLL\TaskScope.BLL.csproj" />
     <ProjectReference Include="..\TaskScope.DAL\TaskScope.DAL.csproj" />
   </ItemGroup>

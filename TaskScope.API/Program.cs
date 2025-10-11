@@ -1,8 +1,12 @@
 
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using TaskScope.API.Models;
 using TaskScope.BLL.Others;
 using TaskScope.DAL.Persistence;
+using TaskScope.DAL.Repositories.Interfaces.Base;
+using TaskScope.DAL.Repositories.Realizations.Base;
 
 namespace TaskScope.API
 {
@@ -22,6 +26,21 @@ namespace TaskScope.API
 
             var currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(currentAssemblies));
+
+            // Repository
+            builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+
+            var corsConfig = builder.Configuration.GetSection("CORS").Get<CorsConfiguration>();
+            builder.Services.AddCors(opt =>
+            {
+                opt.AddDefaultPolicy(policy =>
+                {
+                    policy.WithOrigins(corsConfig.AllowedOrigins)
+                        .WithHeaders(corsConfig.AllowedHeaders)
+                        .WithMethods(corsConfig.AllowedMethods);
+                });
+            });
+
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
