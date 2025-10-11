@@ -4,6 +4,7 @@ using TaskScope.BLL.MediatR.Tasks.Create;
 using TaskScope.BLL.MediatR.Tasks.GetAllByUserId;
 using TaskScope.BLL.MediatR.Tasks.GetTaskById;
 using TaskScope.BLL.MediatR.Tasks.GetTasksByTag;
+using TaskScope.BLL.MediatR.Tasks.Update;
 
 namespace TaskScope.API.Controllers
 {
@@ -60,6 +61,20 @@ namespace TaskScope.API.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateTaskCommand command,
+            CancellationToken cancellationToken)
+        {
+            var result = await Mediator.Send(command, cancellationToken);
+            var resultValue = result.ValueOrDefault;
+            if (result.IsFailed || resultValue == null)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok(resultValue);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] UpdateTaskCommand command,
             CancellationToken cancellationToken)
         {
             var result = await Mediator.Send(command, cancellationToken);

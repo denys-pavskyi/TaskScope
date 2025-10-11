@@ -1,6 +1,7 @@
-﻿namespace TaskScope.BLL.MediatR.Tasks.Update;
+﻿using FluentResults;
+using MediatR;
+using TaskScope.BLL.Models.Dtos.Tasks;
 
-public class UpdateTaskCommand
-{
-    
-}
+namespace TaskScope.BLL.MediatR.Tasks.Update;
+
+public record UpdateTaskCommand(TaskEntityDto NewTask) : IRequest<Result<TaskEntityDto>>;
