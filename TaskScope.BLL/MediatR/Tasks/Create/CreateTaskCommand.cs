@@ -1,6 +1,7 @@
-﻿namespace TaskScope.BLL.MediatR.Tasks.Create;
+﻿using FluentResults;
+using MediatR;
+using TaskScope.BLL.Models.Dtos.Tasks;
 
-public class CreateTaskCommand
-{
-    
-}
+namespace TaskScope.BLL.MediatR.Tasks.Create;
+
+public record CreateTaskCommand(TaskEntityDto NewTask) : IRequest<Result<TaskEntityDto>>;
