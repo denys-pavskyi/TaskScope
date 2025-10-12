@@ -8,7 +8,7 @@ using TaskScope.DAL.Repositories.Interfaces.Base;
 
 namespace TaskScope.BLL.MediatR.Tasks.Update;
 
-public class UpdateTaskHandler : IRequestHandler<CreateTaskCommand, Result<TaskEntityDto>>
+public class UpdateTaskHandler : IRequestHandler<UpdateTaskCommand, Result<TaskEntityDto>>
 {
     private readonly IMapper _mapper;
     private readonly IRepositoryWrapper _repositoryWrapper;
@@ -18,7 +18,7 @@ public class UpdateTaskHandler : IRequestHandler<CreateTaskCommand, Result<TaskE
         _repositoryWrapper = repositoryWrapper;
     }
 
-    public async Task<Result<TaskEntityDto>> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
+    public async Task<Result<TaskEntityDto>> Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
     {
         var taskEntity = _mapper.Map<TaskEntity>(request.NewTask);
         

@@ -26,7 +26,7 @@ public class CreateTaskHandler : IRequestHandler<CreateTaskCommand, Result<TaskE
         var resultIsSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
         if (resultIsSuccess)
         {
-            return Result.Ok(_mapper.Map<TaskEntityDto>(createdTaskDto));
+            return Result.Ok(createdTaskDto);
         }
 
         return Result.Fail("Failed to create task");

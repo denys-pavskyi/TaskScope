@@ -1,6 +1,8 @@
-﻿namespace TaskScope.BLL.MediatR.Tags.Delete;
+﻿using FluentResults;
+using MediatR;
+using TaskScope.BLL.Models.Dtos.Tags;
+using TaskScope.BLL.Models.Dtos.Tasks;
 
-public class DeleteTagCommand
-{
-    
-}
+namespace TaskScope.BLL.MediatR.Tags.Delete;
+
+public record DeleteTagCommand(Guid Id, Guid UserId) : IRequest<Result<TagDto>>;
