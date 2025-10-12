@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TaskScope.BLL.MediatR.Tasks.Create;
+using TaskScope.BLL.MediatR.Tasks.Delete;
 using TaskScope.BLL.MediatR.Tasks.GetAllByUserId;
 using TaskScope.BLL.MediatR.Tasks.GetTaskById;
 using TaskScope.BLL.MediatR.Tasks.GetTasksByTag;
@@ -77,6 +78,23 @@ namespace TaskScope.API.Controllers
         public async Task<IActionResult> Update([FromBody] UpdateTaskCommand command,
             CancellationToken cancellationToken)
         {
+            var result = await Mediator.Send(command, cancellationToken);
+            var resultValue = result.ValueOrDefault;
+            if (result.IsFailed || resultValue == null)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok(resultValue);
+        }
+
+        [HttpDelete]
+        [HttpGet("user/{userId:guid}/task/{taskId:guid}")]
+        public async Task<IActionResult> Delete(Guid UserId, Guid TaskId,
+            CancellationToken cancellationToken)
+        {
+            var command = new DeleteTaskCommand(TaskId, UserId);
+
             var result = await Mediator.Send(command, cancellationToken);
             var resultValue = result.ValueOrDefault;
             if (result.IsFailed || resultValue == null)

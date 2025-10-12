@@ -1,6 +1,7 @@
-﻿namespace TaskScope.BLL.MediatR.Tasks.Delete;
+﻿using FluentResults;
+using MediatR;
+using TaskScope.BLL.Models.Dtos.Tasks;
 
-public class DeleteTaskCommand
-{
-    
-}
+namespace TaskScope.BLL.MediatR.Tasks.Delete;
+
+public record DeleteTaskCommand(Guid Id, Guid UserId) : IRequest<Result<TaskEntityDto>>;

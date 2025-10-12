@@ -26,8 +26,11 @@ public class GetTaskByIdHandler : IRequestHandler<GetTaskByIdQuery, Result<TaskE
                 .Include(t => t.TaskTags)
                 .ThenInclude(tt => tt.Tag)
         );
-        if (task == null)
+        if (task is null)
+        {
             return Result.Fail("Task not found");
+        }
+        
         var dto = _mapper.Map<TaskEntityDto>(task);
         return Result.Ok(dto);
     }
