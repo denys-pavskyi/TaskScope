@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using TaskScope.API.Middlewares;
 using TaskScope.API.Models;
 using TaskScope.BLL.Others;
 using TaskScope.DAL.Persistence;
@@ -58,6 +59,8 @@ namespace TaskScope.API
             {
                 app.UseHsts();
             }
+            app.UseMiddleware<ErrorHandlerMiddleware>();
+            app.UseCors();
 
             app.UseHttpsRedirection();
 
