@@ -22,8 +22,8 @@ public class TaskEntityRepository : RepositoryBase<TaskEntity>, ITaskEntityRepos
 
         Expression<Func<TaskEntity, bool>> predicate = t =>
             t.UserId == userId &&
-            (!startDate.HasValue || t.DueDate >= startDate.Value) &&
-            (!endDate.HasValue || t.DueDate <= endDate.Value);
+            (!startDate.HasValue || t.DueDate.HasValue && t.DueDate.Value.Date >= startDate.Value.Date) &&
+            (!endDate.HasValue || t.DueDate.HasValue && t.DueDate.Value.Date <= endDate.Value.Date);
 
         var tasks = await GetAllAsync(
             predicate: predicate,
