@@ -1,2 +1,2 @@
 import React from 'react';
-export const UpcomingPage: React.FC = () => <h2>1Upcoming Tasks</h2>;
+export const UpcomingPage: React.FC = () => <h2>Upcoming Tasks</h2>;
