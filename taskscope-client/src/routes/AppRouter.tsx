@@ -3,7 +3,7 @@ import MainLayout from '../layouts/main/MainLayout';
 import HomePage from '../pages/home-page/HomePage';
 import { CalendarPage } from '../pages/calendar-page/CalendarPage';
 import { TagsPage } from '../pages/tags-page/TagsPage';
-import { TodayPage } from '../pages/today-page/TodayPage';
+import TodayPage from '../pages/today-page/TodayPage';
 import { UpcomingPage } from '../pages/upcoming-page/UpcomingPage';
 
 export const AppRouter = () => (
