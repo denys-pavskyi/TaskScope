@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import "./TodayPage.scss";
 import dayjs from "dayjs";
 import { getTasksForUser } from "../../services/tasksService";
-import { TaskEntityDto } from "../../models/TaskEntityDto";
-import exp from "constants";
+import { type TaskEntityDto } from "../../models/TaskEntityDto";
 import { TaskCard } from "../../components/public/task-card/TaskCard";
 
 export const TodayPage = () => {

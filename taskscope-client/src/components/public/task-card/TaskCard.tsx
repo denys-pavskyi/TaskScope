@@ -1,5 +1,5 @@
 import { Card, Tag } from "antd";
-import { TaskEntityDto } from "../../../models/TaskEntityDto";
+import type { TaskEntityDto } from "../../../models/TaskEntityDto";
 import "./TaskCard.scss";
 
 const statusMap = {

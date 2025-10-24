@@ -1,6 +1,6 @@
 import { TaskEntityStatus } from "./enums/TaskEntityStatus";
 import { TaskPriority } from "./enums/TaskPriority";
-import { TagDto } from "./TagDto";
+import type { TagDto } from "./TagDto";
 
 
 export interface TaskEntityDto {

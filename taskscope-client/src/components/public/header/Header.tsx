@@ -1,10 +1,9 @@
 import React from 'react'
 import '../header/Header.scss'
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Menu, Typography} from 'antd'
+import { Layout, Menu} from 'antd'
 
 const { Header: AntHeader} = Layout;
-const { Title } = Typography;
 
 const Header: React.FC = () => {
 
