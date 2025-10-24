@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { getTasksForUser } from "../../services/tasksService";
 import { TaskEntityDto } from "../../models/TaskEntityDto";
 import exp from "constants";
+import { TaskCard } from "../../components/public/task-card/TaskCard";
 
 export const TodayPage = () => {
     const [tasks, setTasks] = useState<TaskEntityDto[]>([]);
@@ -29,17 +30,14 @@ export const TodayPage = () => {
 
     return (
         <div className="today-page">
-            {tasks.length === 0 ? (
-                <div>No tasks for today.</div>
-            ) : (
-                <ul>
-                    {tasks.map((t) => (
-                        <li key={t.id}>{t.title}</li>
-                    ))}
-                </ul>
-            )}
+            <h1 className="today-page-title">Today</h1>
+            <div className="today-page-list max-w-2xl mx-auto space-y-4">
+                {tasks.map((task) => (
+                <TaskCard key={task.id} task={task} />
+                ))}
+            </div>
         </div>
-    );
+  );
 };
 
 export default TodayPage;

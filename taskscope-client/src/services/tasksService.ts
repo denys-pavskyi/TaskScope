@@ -14,7 +14,7 @@ export async function getTasksForUser(startDate: string, endDate: string): Promi
         params: { startDate, endDate },
         });
 
-        return response.data.data ?? [];
+        return response.data ?? [];
     } catch (error) {
     console.error("Failed to fetch tasks", error);
     throw error;
