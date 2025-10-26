@@ -6,6 +6,7 @@ using TaskScope.BLL.MediatR.Tasks.GetAllByUserId;
 using TaskScope.BLL.MediatR.Tasks.GetTaskById;
 using TaskScope.BLL.MediatR.Tasks.GetTasksByTag;
 using TaskScope.BLL.MediatR.Tasks.Update;
+using TaskScope.BLL.MediatR.Tasks.GetTodayAndOverdueGroupedByStatus;
 
 namespace TaskScope.API.Controllers
 {
@@ -101,6 +102,19 @@ namespace TaskScope.API.Controllers
             {
                 return BadRequest(result.Errors);
             }
+
+            return Ok(resultValue);
+        }
+
+        [HttpGet("today/{userId:guid}")]
+        public async Task<IActionResult> GetTodayAndOverdueGroupedByStatus(Guid userId, CancellationToken cancellationToken)
+        {
+            var query = new GetTodayAndOverdueTasksGroupedByStatusQuery(userId);
+            var result = await Mediator.Send(query, cancellationToken);
+            var resultValue = result.ValueOrDefault;
+
+            if (resultValue == null || !resultValue.Any())
+                return NoContent();
 
             return Ok(resultValue);
         }

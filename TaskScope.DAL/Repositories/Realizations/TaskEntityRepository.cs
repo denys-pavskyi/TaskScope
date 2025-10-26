@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using TaskScope.DAL.Entities;
+using TaskScope.DAL.Enums;
 using TaskScope.DAL.Persistence;
 using TaskScope.DAL.Repositories.Interfaces;
 using TaskScope.DAL.Repositories.Realizations.Base;
@@ -31,6 +32,20 @@ public class TaskEntityRepository : RepositoryBase<TaskEntity>, ITaskEntityRepos
                 .Include(t => t.TaskTags)
                 .ThenInclude(tt => tt.Tag));
 
+        return tasks.OrderBy(t => t.DueDate);
+    }
+
+    public async Task<IEnumerable<TaskEntity>> GetTodayAndOverdueByUserIdAsync(Guid userId)
+    {
+        var today = DateTime.UtcNow.Date;
+        var tasks = await GetAllAsync(
+            predicate: t => t.UserId == userId &&
+                            t.DueDate.HasValue &&
+                            t.DueDate.Value.Date <= today &&
+                            t.Status != TaskEntityStatus.Done,
+            include: query => query
+                .Include(t => t.TaskTags)
+                .ThenInclude(tt => tt.Tag));
         return tasks.OrderBy(t => t.DueDate);
     }
 }

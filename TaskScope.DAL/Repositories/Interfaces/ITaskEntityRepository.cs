@@ -9,4 +9,6 @@ public interface ITaskEntityRepository: IRepositoryBase<TaskEntity>
         Guid userId,
         DateTime? startDate = null,
         DateTime? endDate = null);
+
+    Task<IEnumerable<TaskEntity>> GetTodayAndOverdueByUserIdAsync(Guid userId);
 }
