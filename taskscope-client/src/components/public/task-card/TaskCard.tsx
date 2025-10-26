@@ -54,7 +54,15 @@ export const TaskCard = ({ task, onStatusChange }: TaskCardProps) => {
             <div className="task-footer">
                 <div className="task-tags">
                     {task.tags?.map((t) => (
-                        <Tag key={t.id}>{t.name}</Tag>
+                        <Tag 
+                            key={t.id} 
+                            color={t.color || undefined}
+                            style={{
+                                borderRadius: '12px',
+                            }}
+                        >
+                            {t.name}
+                        </Tag>
                     ))}
                 </div>
                 <div className="task-meta">
