@@ -12,7 +12,8 @@ export const TodayPage = () => {
     useEffect(() => {
         const fetchTasks = async () => {
             try {
-                const today = dayjs().format("YYYY-MM-DD");
+                //const today = dayjs().format("YYYY-MM-DD");
+                const today = dayjs('2025-10-24').format("YYYY-MM-DD");
                 const result = await getTasksForUser(today, today);
                 setTasks(result);
             } catch (error) {
