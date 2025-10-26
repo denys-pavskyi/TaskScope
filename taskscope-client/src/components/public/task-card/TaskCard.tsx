@@ -27,6 +27,7 @@ export const TaskCard = ({ task, onStatusChange }: TaskCardProps) => {
     const handleStatusChange = (newStatus: TaskEntityStatus) => {
         if (onStatusChange) {
             onStatusChange(task.id, newStatus);
+            console.log(`Status changed to ${newStatus} for task ${task.id}`);
         }
     };
 

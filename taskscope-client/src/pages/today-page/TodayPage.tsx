@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import "./TodayPage.scss";
 import dayjs from "dayjs";
-import { getTasksForUser } from "../../services/tasksService";
+import { getTasksForUser, updateTaskStatus } from "../../services/tasksService";
 import { type TaskEntityDto } from "../../models/TaskEntityDto";
+import { TaskEntityStatus } from "../../models/enums/TaskEntityStatus";
 import { TaskCard } from "../../components/public/task-card/TaskCard";
+import { message } from "antd";
 
 export const TodayPage = () => {
     const [tasks, setTasks] = useState<TaskEntityDto[]>([]);
@@ -33,7 +35,20 @@ export const TodayPage = () => {
             <h1 className="today-page-title">Today</h1>
             <div className="today-page-list max-w-2xl mx-auto space-y-4">
                 {tasks.map((task) => (
-                <TaskCard key={task.id} task={task} />
+                <TaskCard 
+                    key={task.id} 
+                    task={task}
+                    onStatusChange={async (taskId, newStatus) => {
+                        try {
+                            const updatedTask = await updateTaskStatus(taskId, newStatus);
+                            setTasks(tasks.map(t => t.id === taskId ? updatedTask : t));
+                            message.success(`Task status updated to ${TaskEntityStatus[newStatus]}`);
+                        } catch (error) {
+                            console.error("Failed to update task status", error);
+                            message.error("Failed to update task status");
+                        }
+                    }}
+                />
                 ))}
             </div>
         </div>
