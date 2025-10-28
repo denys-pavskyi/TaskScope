@@ -7,6 +7,8 @@ using TaskScope.BLL.MediatR.Tasks.GetTaskById;
 using TaskScope.BLL.MediatR.Tasks.GetTasksByTag;
 using TaskScope.BLL.MediatR.Tasks.Update;
 using TaskScope.BLL.MediatR.Tasks.GetTodayAndOverdueGroupedByStatus;
+using TaskScope.BLL.MediatR.Tasks.UpdateTaskStatus;
+using TaskScope.DAL.Enums;
 
 namespace TaskScope.API.Controllers
 {
@@ -116,6 +118,20 @@ namespace TaskScope.API.Controllers
             if (resultValue == null || !resultValue.Any())
                 return NoContent();
 
+            return Ok(resultValue);
+        }
+
+        [HttpPatch("updateStatus")]
+        public async Task<IActionResult> UpdateTaskStatus(Guid taskId, TaskEntityStatus newStatus, CancellationToken cancellationToken)
+        {
+
+            var command = new UpdateTaskStatusCommand(taskId, newStatus);
+            var result = await Mediator.Send(command, cancellationToken);
+            var resultValue = result.ValueOrDefault;
+            if (result.IsFailed || resultValue == null)
+            {
+                return BadRequest(result.Errors);
+            }
             return Ok(resultValue);
         }
     }
