@@ -7,10 +7,12 @@ export async function getTasksForUser(startDate: string, endDate: string): Promi
     const userId = TEST_USER.USER_DATA.ID;
     try {
         const response = await apiClient.get(`/Tasks/user/${userId}`, {
-            params: { startDate, endDate },
+            params: {
+                startDate,
+                endDate
+            }
         });
-
-        return response.data ?? [];
+        return response.data;
     } catch (error) {
         console.error("Failed to fetch tasks", error);
         throw error;
@@ -19,8 +21,11 @@ export async function getTasksForUser(startDate: string, endDate: string): Promi
 
 export async function updateTaskStatus(taskId: string, newStatus: TaskEntityStatus): Promise<TaskEntityDto> {
     try {
-        const response = await apiClient.patch(`/Tasks/${taskId}/status`, {
-            status: newStatus
+        const response = await apiClient.patch(`/Tasks/updateStatus`, null, {
+            params: {
+                taskId,
+                newStatus
+            }
         });
         return response.data;
     } catch (error) {

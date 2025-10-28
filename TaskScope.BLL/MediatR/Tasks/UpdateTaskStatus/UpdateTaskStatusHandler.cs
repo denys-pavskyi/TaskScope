@@ -4,6 +4,7 @@ using MediatR;
 using TaskScope.BLL.MediatR.Tasks.Update;
 using TaskScope.BLL.Models.Dtos.Tasks;
 using TaskScope.DAL.Entities;
+using TaskScope.DAL.Enums;
 using TaskScope.DAL.Repositories.Interfaces.Base;
 
 namespace TaskScope.BLL.MediatR.Tasks.UpdateTaskStatus;
@@ -30,8 +31,18 @@ public class UpdateTaskStatusHandler : IRequestHandler<UpdateTaskStatusCommand, 
         {
             return Result.Fail("Task already has this status");
         }
+        if(task.Status == TaskEntityStatus.Done && request.NewStatus != TaskEntityStatus.Done)
+        {
+            task.CompletedAt = null;
+        }
 
         task.Status = request.NewStatus;
+
+        if (task.Status == TaskEntityStatus.Done)
+        {
+            task.CompletedAt = DateTime.UtcNow;
+        }
+
         _repositoryWrapper.TaskRepository.Update(task);
 
         var resultIsSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
