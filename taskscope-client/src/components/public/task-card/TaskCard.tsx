@@ -47,7 +47,6 @@ export const TaskCard = ({ task, onStatusChange }: TaskCardProps) => {
             }
             style={{ 
                 borderLeft: `3px solid ${priorityColorMap[task.priority]}`,
-                maxWidth: '300px',
                 width: '100%'
             }}
         >

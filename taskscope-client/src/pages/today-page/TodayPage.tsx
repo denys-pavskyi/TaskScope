@@ -5,8 +5,26 @@ import type { TasksGroupedByStatus } from "../../models/TasksGroupedByStatus";
 import type { TaskEntityDto } from "../../models/TaskEntityDto";
 import { TaskEntityStatus } from "../../models/enums/TaskEntityStatus";
 import { TaskCard } from "../../components/public/task-card/TaskCard";
-import { message } from "antd";
+import { Card, Badge, message } from "antd";
+import { CheckCircleOutlined, ClockCircleOutlined, InboxOutlined } from '@ant-design/icons';
 
+const columnConfig = {
+    Todo: {
+        icon: <InboxOutlined style={{ fontSize: '24px', color: '#8c8c8c' }} />,
+        color: '#fafafa',
+        badge: '#8c8c8c'
+    },
+    InProgress: {
+        icon: <ClockCircleOutlined style={{ fontSize: '24px', color: '#4ca1f0ff' }} />,
+        color: '#e6f7ff',
+        badge: '#1890ff'
+    },
+    Done: {
+        icon: <CheckCircleOutlined style={{ fontSize: '24px', color: '#457d29ff' }} />,
+        color: '#f6ffed',
+        badge: '#52c41a'
+    }
+};
 export const TodayPage = () => {
     const [taskGroups, setTaskGroups] = useState<TasksGroupedByStatus>({
         Todo: [],
@@ -62,9 +80,28 @@ export const TodayPage = () => {
             <h1 className="today-page-title">Today</h1>
             <div className="today-page-columns">
                 {Object.entries(taskGroups).map(([status, tasks]) => (
-                    <div key={status} className="task-column">
-                        <h2 className="column-title">{status}</h2>
-                        <div className="task-list">
+                        <Card 
+                            key={status}
+                            className="task-column"
+                            title={
+                                <div className="column-header">
+                                    {columnConfig[status as keyof typeof columnConfig].icon}
+                                    <span className="column-title">{status}</span>
+                                    <Badge 
+                                        count={tasks.length} 
+                                        style={{ 
+                                            backgroundColor: columnConfig[status as keyof typeof columnConfig].badge,
+                                            marginLeft: 'auto'
+                                        }} 
+                                    />
+                                </div>
+                            }
+                            style={{ 
+                                backgroundColor: columnConfig[status as keyof typeof columnConfig].color
+                            }}
+                            bodyStyle={{ padding: '8px' }}
+                        >
+                            <div className="task-list">
                             {tasks.map((task: TaskEntityDto) => (
                                 <TaskCard 
                                     key={task.id}
@@ -73,7 +110,7 @@ export const TodayPage = () => {
                                 />
                             ))}
                         </div>
-                    </div>
+                        </Card>
                 ))}
             </div>
         </div>

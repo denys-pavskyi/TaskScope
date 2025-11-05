@@ -7,7 +7,7 @@ import { apiClient } from "./apiClient";
 export async function getTodaysTasks(): Promise<TasksGroupedByStatus> {
     const userId = TEST_USER.USER_DATA.ID;
     try {
-        const response = await apiClient.get(`Tasks/today/${userId}`);
+        const response = await apiClient.get(`/Tasks/today/${userId}`);
         return response.data;
     } catch (error) {
         console.error("Failed to fetch today's tasks", error);
@@ -17,7 +17,7 @@ export async function getTodaysTasks(): Promise<TasksGroupedByStatus> {
 
 export async function updateTaskStatus(taskId: string, newStatus: TaskEntityStatus): Promise<TaskEntityDto> {
     try {
-        const response = await apiClient.patch(`Tasks/updateStatus`, null, {
+        const response = await apiClient.patch(`/Tasks/updateStatus`, null, {
             params: {
                 taskId,
                 newStatus

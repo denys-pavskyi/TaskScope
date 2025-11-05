@@ -41,8 +41,7 @@ public class TaskEntityRepository : RepositoryBase<TaskEntity>, ITaskEntityRepos
         var tasks = await GetAllAsync(
             predicate: t => t.UserId == userId &&
                             t.DueDate.HasValue &&
-                            t.DueDate.Value.Date <= today &&
-                            t.Status != TaskEntityStatus.Done,
+                            t.DueDate.Value.Date <= today,
             include: query => query
                 .Include(t => t.TaskTags)
                 .ThenInclude(tt => tt.Tag));

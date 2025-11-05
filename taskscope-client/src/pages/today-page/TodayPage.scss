@@ -1,22 +1,44 @@
 .today-page {
   padding: 24px;
 
-  &__title {
+  .today-page-title {
     font-size: 24px;
     margin-bottom: 16px;
+    font-weight: 600;
   }
 
-  &__list {
+  .today-page-columns {
+    display: flex;
+    gap: 24px;
+    padding: 8px 0;
+    align-items: stretch;
+    height: calc(100vh - 180px); /* leave room for header / top chrome */
+  }
+
+  .task-column {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    min-width: 280px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .task-list {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 12px;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    background: transparent;
   }
 
-  &__loader,
-  &__empty {
+  .column-header {
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 60vh;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
   }
 }
