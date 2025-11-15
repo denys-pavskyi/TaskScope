@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import "./TodayPage.scss";
 import { getTodaysTasks, updateTaskStatus } from "../../services/tasksService";
 import type { TasksGroupedByStatus } from "../../models/TasksGroupedByStatus";
@@ -37,6 +37,7 @@ export const TodayPage = () => {
         const fetchTasks = async () => {
             try {
                 const result = await getTodaysTasks();
+                console.log("Fetched today's tasks:", result);
                 setTaskGroups(result);
             } catch (error) {
                 console.error("Error fetching tasks", error);
@@ -49,29 +50,32 @@ export const TodayPage = () => {
         fetchTasks();
     }, []);
 
-    const handleTaskStatusChange = async (taskId: string, newStatus: TaskEntityStatus) => {
+    const handleTaskStatusChange = useCallback(async (taskId: string, newStatus: TaskEntityStatus) => {
         try {
             const updatedTask = await updateTaskStatus(taskId, newStatus);
-            
-            // Remove task from old status group
-            const oldStatus = Object.entries(taskGroups).find(([_, tasks]) => 
-                tasks.some((t: TaskEntityDto) => t.id === taskId)
-            )?.[0] as keyof TasksGroupedByStatus;
 
-            if (oldStatus) {
-                setTaskGroups(prev => ({
+            setTaskGroups(prev => {
+                const oldStatusKey = (Object.entries(prev).find(([_, tasks]) =>
+                    tasks.some((t: TaskEntityDto) => t.id === taskId)
+                )?.[0]) as keyof TasksGroupedByStatus | undefined;
+
+                if (!oldStatusKey) return prev;
+
+                const newStatusKey = TaskEntityStatus[newStatus] as unknown as keyof TasksGroupedByStatus;
+
+                return {
                     ...prev,
-                    [oldStatus]: prev[oldStatus].filter(t => t.id !== taskId),
-                    [TaskEntityStatus[newStatus]]: [...prev[TaskEntityStatus[newStatus] as keyof TasksGroupedByStatus], updatedTask]
-                }));
-            }
+                    [oldStatusKey]: prev[oldStatusKey].filter(t => t.id !== taskId),
+                    [newStatusKey]: [...prev[newStatusKey], updatedTask]
+                };
+            });
 
             message.success(`Task moved to ${TaskEntityStatus[newStatus]}`);
         } catch (error) {
             console.error("Failed to update task status", error);
             message.error("Failed to update task status");
         }
-    };
+    }, []);
 
     if (loading) return <div className="today-page">Loading...</div>;
 
@@ -99,7 +103,6 @@ export const TodayPage = () => {
                             style={{ 
                                 backgroundColor: columnConfig[status as keyof typeof columnConfig].color
                             }}
-                            bodyStyle={{ padding: '8px' }}
                         >
                             <div className="task-list">
                             {tasks.map((task: TaskEntityDto) => (
