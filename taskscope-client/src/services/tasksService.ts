@@ -1,13 +1,11 @@
-import { TEST_USER } from "../consts/user";
 import type { TaskEntityDto } from "../models/TaskEntityDto";
 import type { TasksGroupedByStatus } from "../models/TasksGroupedByStatus";
 import { TaskEntityStatus } from "../models/enums/TaskEntityStatus";
 import { apiClient } from "./apiClient";
 
 export async function getTodaysTasks(): Promise<TasksGroupedByStatus> {
-    const userId = TEST_USER.USER_DATA.ID;
     try {
-        const response = await apiClient.get(`/Tasks/today/${userId}`);
+        const response = await apiClient.get(`/Tasks/today`);
         return response.data;
     } catch (error) {
         console.error("Failed to fetch today's tasks", error);

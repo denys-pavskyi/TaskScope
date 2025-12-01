@@ -1,13 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TaskScope.BLL.MediatR.Tags.Create;
 using TaskScope.BLL.MediatR.Tags.Delete;
 using TaskScope.BLL.MediatR.Tags.GetAll;
 using TaskScope.BLL.MediatR.Tags.Update;
-using TaskScope.BLL.MediatR.Tasks.Create;
-using TaskScope.BLL.MediatR.Tasks.Delete;
-using TaskScope.BLL.MediatR.Tasks.GetAll;
-using TaskScope.BLL.MediatR.Tasks.Update;
 
 namespace TaskScope.API.Controllers
 {

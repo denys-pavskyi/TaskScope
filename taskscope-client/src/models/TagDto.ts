@@ -3,5 +3,4 @@ export interface TagDto {
     name: string;
     color?: string;
     createdAt: string;  // ISO date string
-    userId: string;
 }
