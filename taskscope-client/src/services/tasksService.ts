@@ -4,26 +4,16 @@ import { TaskEntityStatus } from "../models/enums/TaskEntityStatus";
 import { apiClient } from "./apiClient";
 
 export async function getTodaysTasks(): Promise<TasksGroupedByStatus> {
-    try {
-        const response = await apiClient.get(`/Tasks/today`);
-        return response.data;
-    } catch (error) {
-        console.error("Failed to fetch today's tasks", error);
-        throw error;
-    }
+    const response = await apiClient.get(`/Tasks/today`);
+    return response.data;
 }
 
 export async function updateTaskStatus(taskId: string, newStatus: TaskEntityStatus): Promise<TaskEntityDto> {
-    try {
-        const response = await apiClient.patch(`/Tasks/updateStatus`, null, {
-            params: {
-                taskId,
-                newStatus
-            }
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Failed to update task status", error);
-        throw error;
-    }
+    const response = await apiClient.patch(`/Tasks/updateStatus`, null, {
+        params: {
+            taskId,
+            newStatus
+        }
+    });
+    return response.data;
 }
