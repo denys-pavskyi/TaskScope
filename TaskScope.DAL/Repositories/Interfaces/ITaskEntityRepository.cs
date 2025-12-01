@@ -5,10 +5,9 @@ namespace TaskScope.DAL.Repositories.Interfaces;
 
 public interface ITaskEntityRepository: IRepositoryBase<TaskEntity>
 {
-    Task<IEnumerable<TaskEntity>> GetAllByUserIdAsync(
-        Guid userId,
+    Task<IEnumerable<TaskEntity>> GetAllAsync(
         DateTime? startDate = null,
         DateTime? endDate = null);
 
-    Task<IEnumerable<TaskEntity>> GetTodayAndOverdueByUserIdAsync(Guid userId);
+    Task<IEnumerable<TaskEntity>> GetTodayAndOverdueAsync();
 }

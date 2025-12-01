@@ -6,7 +6,6 @@ namespace TaskScope.DAL.Persistence;
 
 public class TaskScopeDbContext : DbContext
 {
-    public DbSet<User> Users { get; set; }
     public DbSet<TaskEntity> Tasks { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<TaskEntityTag> TaskEntityTags { get; set; }
@@ -45,11 +44,5 @@ public class TaskScopeDbContext : DbContext
             .WithOne(tt => tt.Tag)
             .HasForeignKey(tt => tt.TagId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<TaskEntity>()
-            .HasOne(t => t.User)
-            .WithMany(u => u.Tasks)
-            .HasForeignKey(tt => tt.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
     }
 }

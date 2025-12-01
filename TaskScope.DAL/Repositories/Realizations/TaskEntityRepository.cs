@@ -15,14 +15,12 @@ public class TaskEntityRepository : RepositoryBase<TaskEntity>, ITaskEntityRepos
     {
     }
 
-    public async Task<IEnumerable<TaskEntity>> GetAllByUserIdAsync(
-        Guid userId,
+    public async Task<IEnumerable<TaskEntity>> GetAllAsync(
         DateTime? startDate = null,
         DateTime? endDate = null)
     {
 
         Expression<Func<TaskEntity, bool>> predicate = t =>
-            t.UserId == userId &&
             (!startDate.HasValue || t.DueDate.HasValue && t.DueDate.Value.Date >= startDate.Value.Date) &&
             (!endDate.HasValue || t.DueDate.HasValue && t.DueDate.Value.Date <= endDate.Value.Date);
 
@@ -35,12 +33,11 @@ public class TaskEntityRepository : RepositoryBase<TaskEntity>, ITaskEntityRepos
         return tasks.OrderBy(t => t.DueDate);
     }
 
-    public async Task<IEnumerable<TaskEntity>> GetTodayAndOverdueByUserIdAsync(Guid userId)
+    public async Task<IEnumerable<TaskEntity>> GetTodayAndOverdueAsync()
     {
         var today = DateTime.UtcNow.Date;
         var tasks = await GetAllAsync(
-            predicate: t => t.UserId == userId &&
-                            t.DueDate.HasValue &&
+            predicate: t => t.DueDate.HasValue &&
                             t.DueDate.Value.Date <= today,
             include: query => query
                 .Include(t => t.TaskTags)

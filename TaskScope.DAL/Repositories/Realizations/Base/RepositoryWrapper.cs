@@ -9,26 +9,12 @@ public class RepositoryWrapper: IRepositoryWrapper
 {
     private readonly TaskScopeDbContext _dbContext;
 
-    private IUserRepository _userRepository;
     private ITaskEntityRepository _taskRepository;
     private ITagRepository _tagRepository;
     private ITaskEntityTagRepository _taskTagRepository;
     public RepositoryWrapper(TaskScopeDbContext dbContext)
     {
         _dbContext = dbContext;
-    }
-
-    public IUserRepository UserRepository
-    {
-        get
-        {
-            if (_userRepository is null)
-            {
-                _userRepository = new UserRepository(_dbContext);
-            }
-                
-            return _userRepository;
-        }
     }
 
     public ITaskEntityRepository TaskRepository

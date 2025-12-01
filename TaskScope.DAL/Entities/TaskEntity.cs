@@ -14,10 +14,5 @@ public class TaskEntity
     public TaskEntityStatus Status { get; set; }
     public DateTime? DueDate { get; set; }
     public DateTime? CompletedAt { get; set; }
-    public Guid UserId { get; set; }
-
-    [ForeignKey(nameof(UserId))]
-    public User User { get; set; } = null!;
-
     public ICollection<TaskEntityTag> TaskTags { get; set; } = new List<TaskEntityTag>();
 }
