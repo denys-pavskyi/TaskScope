@@ -1,5 +1,7 @@
 import type { TaskEntityDto } from "../models/TaskEntityDto";
 import type { TasksGroupedByStatus } from "../models/TasksGroupedByStatus";
+import type { CreateTaskDto } from "../models/CreateTaskDto";
+import type { UpdateTaskDto } from "../models/UpdateTaskDto";
 import { TaskEntityStatus } from "../models/enums/TaskEntityStatus";
 import { apiClient } from "./apiClient";
 
@@ -15,5 +17,15 @@ export async function updateTaskStatus(taskId: string, newStatus: TaskEntityStat
             newStatus
         }
     });
+    return response.data;
+}
+
+export async function createTask(task: CreateTaskDto): Promise<TaskEntityDto> {
+    const response = await apiClient.post(`/Tasks`, task);
+    return response.data;
+}
+
+export async function updateTask(task: UpdateTaskDto): Promise<TaskEntityDto> {
+    const response = await apiClient.put(`/Tasks`, task);
     return response.data;
 }

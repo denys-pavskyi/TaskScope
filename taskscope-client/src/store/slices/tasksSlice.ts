@@ -2,8 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { TasksGroupedByStatus } from "../../models/TasksGroupedByStatus";
 import type { TaskEntityDto } from "../../models/TaskEntityDto";
+import type { CreateTaskDto } from "../../models/CreateTaskDto";
+import type { UpdateTaskDto } from "../../models/UpdateTaskDto";
 import { TaskEntityStatus } from "../../models/enums/TaskEntityStatus";
-import { getTodaysTasks, updateTaskStatus } from "../../services/tasksService";
+import { getTodaysTasks, updateTaskStatus, createTask, updateTask } from "../../services/tasksService";
 
 interface TasksState {
     todayTasks: TasksGroupedByStatus;
@@ -29,7 +31,6 @@ export const fetchTodayTasks = createAsyncThunk(
             const result = await getTodaysTasks();
             return result;
         } catch (error) {
-            // Error toast is shown automatically by apiClient interceptor
             return rejectWithValue('Failed to fetch tasks');
         }
     }
@@ -42,8 +43,31 @@ export const changeTaskStatus = createAsyncThunk(
             const updatedTask = await updateTaskStatus(taskId, newStatus);
             return { taskId, newStatus, updatedTask };
         } catch (error) {
-            // Error toast is shown automatically by apiClient interceptor
             return rejectWithValue('Failed to update task status');
+        }
+    }
+);
+
+export const addTask = createAsyncThunk(
+    'tasks/addTask',
+    async (task: CreateTaskDto, { rejectWithValue }) => {
+        try {
+            const newTask = await createTask(task);
+            return newTask;
+        } catch (error) {
+            return rejectWithValue('Failed to create task');
+        }
+    }
+);
+
+export const editTask = createAsyncThunk(
+    'tasks/editTask',
+    async (task: UpdateTaskDto, { rejectWithValue }) => {
+        try {
+            const updatedTask = await updateTask(task);
+            return updatedTask;
+        } catch (error) {
+            return rejectWithValue('Failed to update task');
         }
     }
 );
@@ -91,6 +115,37 @@ const tasksSlice = createSlice({
             }
         });
         builder.addCase(changeTaskStatus.rejected, (state, action) => {
+            state.error = action.payload as string;
+        });
+
+        // Add task
+        builder.addCase(addTask.fulfilled, (state, action) => {
+            const newTask = action.payload;
+            const statusKey = TaskEntityStatus[newTask.status] as keyof TasksGroupedByStatus;
+            state.todayTasks[statusKey].push(newTask);
+        });
+        builder.addCase(addTask.rejected, (state, action) => {
+            state.error = action.payload as string;
+        });
+
+        // Edit task
+        builder.addCase(editTask.fulfilled, (state, action) => {
+            const updatedTask = action.payload;
+            
+            // Find and remove task from old status
+            const oldStatusKey = (Object.entries(state.todayTasks).find(([_, tasks]) =>
+                tasks.some((t: TaskEntityDto) => t.id === updatedTask.id)
+            )?.[0]) as keyof TasksGroupedByStatus | undefined;
+
+            if (oldStatusKey) {
+                state.todayTasks[oldStatusKey] = state.todayTasks[oldStatusKey].filter(t => t.id !== updatedTask.id);
+                
+                // Add task to new status
+                const newStatusKey = TaskEntityStatus[updatedTask.status] as keyof TasksGroupedByStatus;
+                state.todayTasks[newStatusKey].push(updatedTask);
+            }
+        });
+        builder.addCase(editTask.rejected, (state, action) => {
             state.error = action.payload as string;
         });
     }

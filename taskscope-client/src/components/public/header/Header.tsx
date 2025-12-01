@@ -13,8 +13,7 @@ const Header: React.FC = () => {
     const items = [
         { key: '/today', label: 'Today' },
         { key: '/upcoming', label: 'Upcoming' },
-        { key: '/tags', label: 'Tags' },
-        { key: '/calendar', label: 'Calendar' },
+        { key: '/tags', label: 'Tags' }
     ];
 
     return (

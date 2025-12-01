@@ -26,11 +26,6 @@ public class TaskEntityValidator : AbstractValidator<TaskEntityDto>
             .IsInEnum()
             .WithMessage("Invalid task status");
 
-        RuleFor(x => x.DueDate)
-            .GreaterThan(DateTime.Now)
-            .WithMessage("Due date must be in the future")
-            .When(x => x.DueDate.HasValue);
-
         RuleFor(x => x.Tags)
             .NotNull()
             .WithMessage("Tags collection cannot be null");

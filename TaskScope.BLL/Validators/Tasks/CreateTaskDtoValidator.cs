@@ -25,10 +25,5 @@ public class CreateTaskDtoValidator : AbstractValidator<CreateTaskDto>
         RuleFor(x => x.Status)
             .IsInEnum()
             .WithMessage("Invalid task status");
-
-        RuleFor(x => x.DueDate)
-            .GreaterThan(DateTime.Now)
-            .WithMessage("Due date must be in the future")
-            .When(x => x.DueDate.HasValue);
     }
 }
