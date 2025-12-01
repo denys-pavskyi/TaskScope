@@ -41,10 +41,13 @@ export const TodayPage = () => {
 
     // Sort tasks by priority (Critical > High > Medium > Low)
     const sortedTasks = useMemo(() => {
+        if (!todayTasks) {
+            return { Todo: [], InProgress: [], Done: [] };
+        }
         const sorted: TasksGroupedByStatus = {
-            Todo: [...todayTasks.Todo].sort((a, b) => b.priority - a.priority),
-            InProgress: [...todayTasks.InProgress].sort((a, b) => b.priority - a.priority),
-            Done: [...todayTasks.Done].sort((a, b) => b.priority - a.priority),
+            Todo: [...(todayTasks.Todo || [])].sort((a, b) => b.priority - a.priority),
+            InProgress: [...(todayTasks.InProgress || [])].sort((a, b) => b.priority - a.priority),
+            Done: [...(todayTasks.Done || [])].sort((a, b) => b.priority - a.priority),
         };
         return sorted;
     }, [todayTasks]);

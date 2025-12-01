@@ -121,8 +121,14 @@ const tasksSlice = createSlice({
         // Add task
         builder.addCase(addTask.fulfilled, (state, action) => {
             const newTask = action.payload;
-            const statusKey = TaskEntityStatus[newTask.status] as keyof TasksGroupedByStatus;
-            state.todayTasks[statusKey].push(newTask);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            // Only add to today's tasks if it's for today or overdue
+            if (!newTask.dueDate || new Date(newTask.dueDate) <= today) {
+                const statusKey = TaskEntityStatus[newTask.status] as keyof TasksGroupedByStatus;
+                state.todayTasks[statusKey].push(newTask);
+            }
         });
         builder.addCase(addTask.rejected, (state, action) => {
             state.error = action.payload as string;
@@ -131,6 +137,8 @@ const tasksSlice = createSlice({
         // Edit task
         builder.addCase(editTask.fulfilled, (state, action) => {
             const updatedTask = action.payload;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
             
             // Find and remove task from old status
             const oldStatusKey = (Object.entries(state.todayTasks).find(([_, tasks]) =>
@@ -140,9 +148,11 @@ const tasksSlice = createSlice({
             if (oldStatusKey) {
                 state.todayTasks[oldStatusKey] = state.todayTasks[oldStatusKey].filter(t => t.id !== updatedTask.id);
                 
-                // Add task to new status
-                const newStatusKey = TaskEntityStatus[updatedTask.status] as keyof TasksGroupedByStatus;
-                state.todayTasks[newStatusKey].push(updatedTask);
+                // Only add back to today's tasks if it's for today or overdue
+                if (!updatedTask.dueDate || new Date(updatedTask.dueDate) <= today) {
+                    const newStatusKey = TaskEntityStatus[updatedTask.status] as keyof TasksGroupedByStatus;
+                    state.todayTasks[newStatusKey].push(updatedTask);
+                }
             }
         });
         builder.addCase(editTask.rejected, (state, action) => {

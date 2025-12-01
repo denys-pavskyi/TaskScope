@@ -53,7 +53,7 @@ export const TaskModal = ({ open, onClose, onSubmit, task }: TaskModalProps) => 
                 description: values.description || undefined,
                 priority: values.priority,
                 status: values.status,
-                dueDate: values.dueDate ? values.dueDate.toISOString() : undefined,
+                dueDate: values.dueDate ? values.dueDate.format('YYYY-MM-DD') + 'T00:00:00' : undefined,
             };
 
             await onSubmit(taskData);
