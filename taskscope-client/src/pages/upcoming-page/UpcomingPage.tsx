@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import "./UpcomingPage.scss";
-import type { TaskEntityDto } from "../../models/TaskEntityDto";
-import type { CreateTaskDto } from "../../models/CreateTaskDto";
-import type { UpdateTaskDto } from "../../models/UpdateTaskDto";
+import type { TaskEntityDto } from "../../models/tasks/TaskEntityDto";
+import type { CreateTaskDto } from "../../models/tasks/CreateTaskDto";
+import type { UpdateTaskDto } from "../../models/tasks/UpdateTaskDto";
 import { TaskColumn } from "../../components/public/task-column/TaskColumn";
 import { TaskModal } from "../../components/public/task-modal/TaskModal";
 import { CalendarOutlined } from '@ant-design/icons';
@@ -119,7 +119,7 @@ export const UpcomingPage = () => {
                     title={`Tomorrow (${getTomorrowDate()})`}
                     icon={<CalendarOutlined style={{ fontSize: '24px', color: '#1890ff' }} />}
                     tasks={groupedTasks.tomorrow}
-                    color="#e6f7ff"
+                    color="#1a2332"
                     badgeColor="#1890ff"
                     onStatusChange={handleTaskStatusChange}
                     onEdit={handleOpenModal}
@@ -129,7 +129,7 @@ export const UpcomingPage = () => {
                     title={`Day After (${getDayAfterTomorrowDate()})`}
                     icon={<CalendarOutlined style={{ fontSize: '24px', color: '#52c41a' }} />}
                     tasks={groupedTasks.dayAfterTomorrow}
-                    color="#f6ffed"
+                    color="#1f2b1f"
                     badgeColor="#52c41a"
                     onStatusChange={handleTaskStatusChange}
                     onEdit={handleOpenModal}
@@ -139,7 +139,7 @@ export const UpcomingPage = () => {
                     title="Later"
                     icon={<CalendarOutlined style={{ fontSize: '24px', color: '#fa8c16' }} />}
                     tasks={groupedTasks.later}
-                    color="#fff7e6"
+                    color="#2a2416"
                     badgeColor="#fa8c16"
                     onStatusChange={handleTaskStatusChange}
                     onEdit={handleOpenModal}

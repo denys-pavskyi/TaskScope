@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { TagDto } from "../../models/TagDto";
-import type { CreateTagDto } from "../../models/CreateTagDto";
-import type { UpdateTagDto } from "../../models/UpdateTagDto";
+import type { TagDto } from "../../models/tags/TagDto";
+import type { CreateTagDto } from "../../models/tags/CreateTagDto";
+import type { UpdateTagDto } from "../../models/tags/UpdateTagDto";
 import { getTags, createTag, updateTag, deleteTag } from "../../services/tagsService";
 
 interface TagsState {

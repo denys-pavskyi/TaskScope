@@ -3,9 +3,9 @@ import { CloseOutlined } from '@ant-design/icons';
 import { useEffect } from "react";
 import { TaskPriority } from "../../../models/enums/TaskPriority";
 import { TaskEntityStatus } from "../../../models/enums/TaskEntityStatus";
-import type { TaskEntityDto } from "../../../models/TaskEntityDto";
-import type { CreateTaskDto } from "../../../models/CreateTaskDto";
-import type { UpdateTaskDto } from "../../../models/UpdateTaskDto";
+import type { TaskEntityDto } from "../../../models/tasks/TaskEntityDto";
+import type { CreateTaskDto } from "../../../models/tasks/CreateTaskDto";
+import type { UpdateTaskDto } from "../../../models/tasks/UpdateTaskDto";
 import dayjs from 'dayjs';
 import "./TaskModal.scss";
 

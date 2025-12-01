@@ -1,8 +1,8 @@
 import { Modal, Form, Input } from "antd";
 import { useEffect } from "react";
-import type { TagDto } from "../../../models/TagDto";
-import type { CreateTagDto } from "../../../models/CreateTagDto";
-import type { UpdateTagDto } from "../../../models/UpdateTagDto";
+import type { TagDto } from "../../../models/tags/TagDto";
+import type { CreateTagDto } from "../../../models/tags/CreateTagDto";
+import type { UpdateTagDto } from "../../../models/tags/UpdateTagDto";
 import "./TagModal.scss";
 
 interface TagModalProps {

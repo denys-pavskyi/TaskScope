@@ -1,6 +1,6 @@
 import { Card, Badge } from "antd";
 import type { ReactNode } from "react";
-import type { TaskEntityDto } from "../../../models/TaskEntityDto";
+import type { TaskEntityDto } from "../../../models/tasks/TaskEntityDto";
 import { TaskCard } from "../task-card/TaskCard";
 import { TaskEntityStatus } from "../../../models/enums/TaskEntityStatus";
 import "./TaskColumn.scss";

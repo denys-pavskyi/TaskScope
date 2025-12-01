@@ -9,7 +9,7 @@
         }
         
         &::-webkit-color-swatch {
-            border: 1px solid #d9d9d9;
+            border: 1px solid #434343;
             border-radius: 4px;
         }
     }
@@ -17,12 +17,12 @@
     .tag-preview-section {
         margin-top: 16px;
         padding-top: 16px;
-        border-top: 1px solid #f0f0f0;
+        border-top: 1px solid #303030;
 
         .preview-label {
             display: block;
             margin-bottom: 8px;
-            color: rgba(0, 0, 0, 0.85);
+            color: rgba(255, 255, 255, 0.87);
             font-weight: 500;
         }
 
@@ -34,7 +34,7 @@
             color: #fff;
             font-size: 14px;
             font-weight: 500;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
     }
 }

@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { TasksGroupedByStatus } from "../../models/TasksGroupedByStatus";
-import type { TaskEntityDto } from "../../models/TaskEntityDto";
-import type { CreateTaskDto } from "../../models/CreateTaskDto";
-import type { UpdateTaskDto } from "../../models/UpdateTaskDto";
+import type { TasksGroupedByStatus } from "../../models/tasks/TasksGroupedByStatus";
+import type { TaskEntityDto } from "../../models/tasks/TaskEntityDto";
+import type { CreateTaskDto } from "../../models/tasks/CreateTaskDto";
+import type { UpdateTaskDto } from "../../models/tasks/UpdateTaskDto";
 import { TaskEntityStatus } from "../../models/enums/TaskEntityStatus";
 import { getTodaysTasks, getUpcomingTasks, updateTaskStatus, createTask, updateTask } from "../../services/tasksService";
 

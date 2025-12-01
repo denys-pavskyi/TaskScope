@@ -1,7 +1,7 @@
-import type { TaskEntityDto } from "../models/TaskEntityDto";
-import type { TasksGroupedByStatus } from "../models/TasksGroupedByStatus";
-import type { CreateTaskDto } from "../models/CreateTaskDto";
-import type { UpdateTaskDto } from "../models/UpdateTaskDto";
+import type { TaskEntityDto } from "../models/tasks/TaskEntityDto";
+import type { TasksGroupedByStatus } from "../models/tasks/TasksGroupedByStatus";
+import type { CreateTaskDto } from "../models/tasks/CreateTaskDto";
+import type { UpdateTaskDto } from "../models/tasks/UpdateTaskDto";
 import { TaskEntityStatus } from "../models/enums/TaskEntityStatus";
 import { apiClient } from "./apiClient";
 

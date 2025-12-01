@@ -1,8 +1,8 @@
 import { useEffect, useCallback, useMemo } from "react";
 import "./TodayPage.scss";
-import type { TaskEntityDto } from "../../models/TaskEntityDto";
-import type { CreateTaskDto } from "../../models/CreateTaskDto";
-import type { UpdateTaskDto } from "../../models/UpdateTaskDto";
+import type { TaskEntityDto } from "../../models/tasks/TaskEntityDto";
+import type { CreateTaskDto } from "../../models/tasks/CreateTaskDto";
+import type { UpdateTaskDto } from "../../models/tasks/UpdateTaskDto";
 import { TaskEntityStatus } from "../../models/enums/TaskEntityStatus";
 import { TaskColumn } from "../../components/public/task-column/TaskColumn";
 import { TaskModal } from "../../components/public/task-modal/TaskModal";
@@ -18,23 +18,23 @@ import {
     openEditTaskModal,
     closeTaskModal
 } from "../../store/slices/tasksSlice";
-import type { TasksGroupedByStatus } from "../../models/TasksGroupedByStatus";
+import type { TasksGroupedByStatus } from "../../models/tasks/TasksGroupedByStatus";
 import addPostIcon from "../../assets/add-post.png";
 
 const columnConfig = {
     Todo: {
         icon: <InboxOutlined style={{ fontSize: '24px', color: '#8c8c8c' }} />,
-        color: '#fafafa',
+        color: '#1f1f1f',
         badge: '#8c8c8c'
     },
     InProgress: {
         icon: <ClockCircleOutlined style={{ fontSize: '24px', color: '#4ca1f0ff' }} />,
-        color: '#e6f7ff',
+        color: '#1a2332',
         badge: '#1890ff'
     },
     Done: {
         icon: <CheckCircleOutlined style={{ fontSize: '24px', color: '#457d29ff' }} />,
-        color: '#f6ffed',
+        color: '#1f2b1f',
         badge: '#52c41a'
     }
 };

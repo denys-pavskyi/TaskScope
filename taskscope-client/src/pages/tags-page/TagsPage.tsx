@@ -14,9 +14,9 @@ import {
     closeDeleteConfirm
 } from "../../store/slices/tagsSlice";
 import { TagModal } from "../../components/public/tag-modal/TagModal";
-import type { TagDto } from "../../models/TagDto";
-import type { CreateTagDto } from "../../models/CreateTagDto";
-import type { UpdateTagDto } from "../../models/UpdateTagDto";
+import type { TagDto } from "../../models/tags/TagDto";
+import type { CreateTagDto } from "../../models/tags/CreateTagDto";
+import type { UpdateTagDto } from "../../models/tags/UpdateTagDto";
 import "./TagsPage.scss";
 
 export const TagsPage = () => {
@@ -100,6 +100,7 @@ export const TagsPage = () => {
                             key={tag.id}
                             className="tag-card"
                             hoverable
+                            style={{ backgroundColor: '#1f1f1f' }}
                         >
                             <div className="tag-card-content">
                                 <div 
