@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskScope.BLL.MediatR.TaskEntityTags.Create;
 using TaskScope.BLL.MediatR.TaskEntityTags.Delete;
+using TaskScope.BLL.Models.Dtos.TaskEntityTags;
 
 namespace TaskScope.API.Controllers
 {
@@ -9,9 +10,11 @@ namespace TaskScope.API.Controllers
     public class TaskEntityTagController : BaseApiController
     {
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateTaskEntityTagCommand command,
+        public async Task<IActionResult> Create([FromBody] CreateTaskEntityTagDto request,
             CancellationToken cancellationToken)
         {
+            var command = new CreateTaskEntityTagCommand(request);
+
             var validationError = await ValidateRequestAsync(command, cancellationToken);
             if (validationError != null)
                 return validationError;
@@ -31,10 +34,6 @@ namespace TaskScope.API.Controllers
             CancellationToken cancellationToken)
         {
             var command = new DeleteTaskEntityTagCommand(taskId, tagId);
-
-            var validationError = await ValidateRequestAsync(command, cancellationToken);
-            if (validationError != null)
-                return validationError;
 
             var result = await Mediator.Send(command, cancellationToken);
             var resultValue = result.ValueOrDefault;

@@ -3,6 +3,7 @@ using TaskScope.BLL.MediatR.Tags.Create;
 using TaskScope.BLL.MediatR.Tags.Delete;
 using TaskScope.BLL.MediatR.Tags.GetAll;
 using TaskScope.BLL.MediatR.Tags.Update;
+using TaskScope.BLL.Models.Dtos.Tags;
 
 namespace TaskScope.API.Controllers
 {
@@ -26,9 +27,11 @@ namespace TaskScope.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateTagCommand command,
+        public async Task<IActionResult> Create([FromBody] CreateTagDto request,
             CancellationToken cancellationToken)
         {
+            var command = new CreateTagCommand(request);
+
             var validationError = await ValidateRequestAsync(command, cancellationToken);
             if (validationError != null)
                 return validationError;
@@ -44,9 +47,11 @@ namespace TaskScope.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] UpdateTagCommand command,
+        public async Task<IActionResult> Update([FromBody] UpdateTagDto request,
             CancellationToken cancellationToken)
         {
+            var command = new UpdateTagCommand(request);
+
             var validationError = await ValidateRequestAsync(command, cancellationToken);
             if (validationError != null)
                 return validationError;
@@ -62,15 +67,11 @@ namespace TaskScope.API.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(Guid TagId,
+        public async Task<IActionResult> Delete(Guid tagId,
             CancellationToken cancellationToken)
         {
-            var command = new DeleteTagCommand(TagId);
+            var command = new DeleteTagCommand(tagId);
             
-            var validationError = await ValidateRequestAsync(command, cancellationToken);
-            if (validationError != null)
-                return validationError;
-
             var result = await Mediator.Send(command, cancellationToken);
             var resultValue = result.ValueOrDefault;
             if (result.IsFailed || resultValue == null)

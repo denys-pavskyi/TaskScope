@@ -5,9 +5,10 @@ using TaskScope.BLL.MediatR.Tasks.Delete;
 using TaskScope.BLL.MediatR.Tasks.GetAll;
 using TaskScope.BLL.MediatR.Tasks.GetTaskById;
 using TaskScope.BLL.MediatR.Tasks.GetTasksByTag;
-using TaskScope.BLL.MediatR.Tasks.Update;
 using TaskScope.BLL.MediatR.Tasks.GetTodayAndOverdueGroupedByStatus;
+using TaskScope.BLL.MediatR.Tasks.Update;
 using TaskScope.BLL.MediatR.Tasks.UpdateTaskStatus;
+using TaskScope.BLL.Models.Dtos.Tasks;
 using TaskScope.DAL.Enums;
 
 namespace TaskScope.API.Controllers
@@ -63,9 +64,10 @@ namespace TaskScope.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateTaskCommand command,
+        public async Task<IActionResult> Create([FromBody] CreateTaskDto request,
             CancellationToken cancellationToken)
         {
+            var command = new CreateTaskCommand(request);
             var validationError = await ValidateRequestAsync(command, cancellationToken);
             if (validationError != null)
                 return validationError;
@@ -81,9 +83,11 @@ namespace TaskScope.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] UpdateTaskCommand command,
+        public async Task<IActionResult> Update([FromBody] UpdateTaskDto request,
             CancellationToken cancellationToken)
         {
+            var command = new UpdateTaskCommand(request);
+
             var validationError = await ValidateRequestAsync(command, cancellationToken);
             if (validationError != null)
                 return validationError;
@@ -104,10 +108,6 @@ namespace TaskScope.API.Controllers
         {
             var command = new DeleteTaskCommand(TaskId);
             
-            var validationError = await ValidateRequestAsync(command, cancellationToken);
-            if (validationError != null)
-                return validationError;
-
             var result = await Mediator.Send(command, cancellationToken);
             var resultValue = result.ValueOrDefault;
             if (result.IsFailed || resultValue == null)
