@@ -34,3 +34,8 @@ export async function updateTask(task: UpdateTaskDto): Promise<TaskEntityDto> {
     const response = await apiClient.put(`/Tasks`, task);
     return response.data;
 }
+
+export async function getTaskById(taskId: string): Promise<TaskEntityDto> {
+    const response = await apiClient.get(`/Tasks/${taskId}`);
+    return response.data;
+}

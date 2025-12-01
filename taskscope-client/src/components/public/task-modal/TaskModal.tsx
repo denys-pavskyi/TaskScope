@@ -1,11 +1,14 @@
-import { Modal, Form, Input, Select, DatePicker, Card } from "antd";
-import { CloseOutlined } from '@ant-design/icons';
-import { useEffect } from "react";
+import { Modal, Form, Input, Select, DatePicker, Card, Button } from "antd";
+import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
+import { useEffect, useState } from "react";
 import { TaskPriority } from "../../../models/enums/TaskPriority";
 import { TaskEntityStatus } from "../../../models/enums/TaskEntityStatus";
 import type { TaskEntityDto } from "../../../models/tasks/TaskEntityDto";
 import type { CreateTaskDto } from "../../../models/tasks/CreateTaskDto";
 import type { UpdateTaskDto } from "../../../models/tasks/UpdateTaskDto";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { fetchTags } from "../../../store/slices/tagsSlice";
+import { linkTagToTask, unlinkTagFromTask } from "../../../store/slices/taskTagsSlice";
 import dayjs from 'dayjs';
 import "./TaskModal.scss";
 
@@ -20,11 +23,19 @@ interface TaskModalProps {
 
 export const TaskModal = ({ open, onClose, onSubmit, task }: TaskModalProps) => {
     const [form] = Form.useForm();
+    const [showTagSelector, setShowTagSelector] = useState(false);
+    const [initialTaskId, setInitialTaskId] = useState<string | undefined>(undefined);
+    const dispatch = useAppDispatch();
+    const { tags } = useAppSelector(state => state.tags);
+    const { loading: taskTagsLoading } = useAppSelector(state => state.taskTags);
     const isEditing = !!task;
 
     useEffect(() => {
         if (open) {
-            if (task) {
+            dispatch(fetchTags());
+            if (task && task.id !== initialTaskId) {
+                // Only reset form when it's a different task or new modal open
+                setInitialTaskId(task.id);
                 form.setFieldsValue({
                     title: task.title,
                     description: task.description,
@@ -32,7 +43,8 @@ export const TaskModal = ({ open, onClose, onSubmit, task }: TaskModalProps) => 
                     status: task.status,
                     dueDate: task.dueDate ? dayjs(task.dueDate) : undefined,
                 });
-            } else {
+            } else if (!task) {
+                setInitialTaskId(undefined);
                 form.setFieldsValue({
                     title: undefined,
                     description: undefined,
@@ -42,7 +54,7 @@ export const TaskModal = ({ open, onClose, onSubmit, task }: TaskModalProps) => 
                 });
             }
         }
-    }, [open, task, form]);
+    }, [open, task, form, dispatch, initialTaskId]);
 
     const handleSubmit = async () => {
         try {
@@ -66,8 +78,27 @@ export const TaskModal = ({ open, onClose, onSubmit, task }: TaskModalProps) => 
 
     const handleCancel = () => {
         form.resetFields();
+        setShowTagSelector(false);
+        setInitialTaskId(undefined);
         onClose();
     };
+
+    const handleAddTag = async (tagId: string) => {
+        if (isEditing && task) {
+            await dispatch(linkTagToTask({ taskId: task.id, tagId }));
+            setShowTagSelector(false);
+        }
+    };
+
+    const handleRemoveTag = async (tagId: string) => {
+        if (isEditing && task) {
+            await dispatch(unlinkTagFromTask({ taskId: task.id, tagId }));
+        }
+    };
+
+    const availableTags = tags.filter(
+        tag => !task?.tags.some(taskTag => taskTag.id === tag.id)
+    );
 
     return (
         <Modal
@@ -148,26 +179,67 @@ export const TaskModal = ({ open, onClose, onSubmit, task }: TaskModalProps) => 
                     />
                 </Form.Item>
 
-                {isEditing && task.tags && task.tags.length > 0 && (
+                {isEditing && (
                     <div className="task-tags-section">
-                        <label className="ant-form-item-label">Tags</label>
-                        <div className="tags-container">
-                            {task.tags.map((tag) => (
-                                <Card 
-                                    key={tag.id}
-                                    className="tag-card"
-                                    size="small"
-                                    style={{ 
-                                        backgroundColor: tag.color || '#f0f0f0',
-                                        border: 'none',
-                                        position: 'relative'
-                                    }}
-                                >
-                                    <span className="tag-name">{tag.name}</span>
-                                    <CloseOutlined className="tag-delete-icon" />
-                                </Card>
-                            ))}
+                        <div className="tags-header">
+                            <label className="ant-form-item-label">Tags</label>
+                            <Button 
+                                type="dashed" 
+                                icon={<PlusOutlined />} 
+                                size="small"
+                                onClick={() => setShowTagSelector(!showTagSelector)}
+                                disabled={availableTags.length === 0}
+                            >
+                                Add Tag
+                            </Button>
                         </div>
+
+                        {showTagSelector && availableTags.length > 0 && (
+                            <div className="tag-selector">
+                                <Select
+                                    placeholder="Select a tag to add"
+                                    style={{ width: '100%' }}
+                                    onChange={handleAddTag}
+                                    loading={taskTagsLoading}
+                                    value={undefined}
+                                >
+                                    {availableTags.map(tag => (
+                                        <Select.Option key={tag.id} value={tag.id}>
+                                            <div className="tag-option-preview">
+                                                <div 
+                                                    className="tag-color-box"
+                                                    style={{ backgroundColor: tag.color }}
+                                                />
+                                                {tag.name}
+                                            </div>
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            </div>
+                        )}
+
+                        {task && task.tags && task.tags.length > 0 && (
+                            <div className="tags-container">
+                                {task.tags.map((tag) => (
+                                    <Card 
+                                        key={tag.id}
+                                        className="tag-card"
+                                        size="small"
+                                        style={{ 
+                                            backgroundColor: tag.color || '#f0f0f0',
+                                            border: 'none',
+                                            position: 'relative'
+                                        }}
+                                    >
+                                        <span className="tag-name">{tag.name}</span>
+                                        <CloseOutlined 
+                                            className="tag-delete-icon" 
+                                            onClick={() => handleRemoveTag(tag.id)}
+                                        />
+                                    </Card>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
             </Form>

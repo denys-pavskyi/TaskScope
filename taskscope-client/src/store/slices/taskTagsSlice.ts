@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { CreateTaskEntityTagDto } from "../../models/task-tags/CreateTaskEntityTagDto";
 import { addTagToTask, removeTagFromTask } from "../../services/taskTagsService";
+import { getTaskById } from "../../services/tasksService";
 
 interface TaskTagsState {
     loading: boolean;
@@ -18,7 +19,8 @@ export const linkTagToTask = createAsyncThunk(
     async (dto: CreateTaskEntityTagDto, { rejectWithValue }) => {
         try {
             await addTagToTask(dto);
-            return dto;
+            const updatedTask = await getTaskById(dto.taskId);
+            return { dto, updatedTask };
         } catch (error) {
             return rejectWithValue('Failed to link tag to task');
         }
@@ -30,7 +32,8 @@ export const unlinkTagFromTask = createAsyncThunk(
     async ({ taskId, tagId }: { taskId: string; tagId: string }, { rejectWithValue }) => {
         try {
             await removeTagFromTask(taskId, tagId);
-            return { taskId, tagId };
+            const updatedTask = await getTaskById(taskId);
+            return { taskId, tagId, updatedTask };
         } catch (error) {
             return rejectWithValue('Failed to unlink tag from task');
         }

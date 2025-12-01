@@ -6,6 +6,7 @@ import type { CreateTaskDto } from "../../models/tasks/CreateTaskDto";
 import type { UpdateTaskDto } from "../../models/tasks/UpdateTaskDto";
 import { TaskEntityStatus } from "../../models/enums/TaskEntityStatus";
 import { getTodaysTasks, getUpcomingTasks, updateTaskStatus, createTask, updateTask } from "../../services/tasksService";
+import { linkTagToTask, unlinkTagFromTask } from "./taskTagsSlice";
 
 interface TasksState {
     todayTasks: TasksGroupedByStatus;
@@ -220,6 +221,57 @@ const tasksSlice = createSlice({
         });
         builder.addCase(editTask.rejected, (state, action) => {
             state.error = action.payload as string;
+        });
+
+        // Listen to tag changes from taskTagsSlice
+        builder.addCase(linkTagToTask.fulfilled, (state, action) => {
+            const { updatedTask } = action.payload;
+            
+            // Update the editing task to show new tags immediately
+            if (state.editingTask && state.editingTask.id === updatedTask.id) {
+                state.editingTask = updatedTask;
+            }
+            
+            // Update the task in todayTasks if it exists there
+            for (const status in state.todayTasks) {
+                const statusKey = status as keyof TasksGroupedByStatus;
+                const taskIndex = state.todayTasks[statusKey].findIndex(t => t.id === updatedTask.id);
+                if (taskIndex !== -1) {
+                    state.todayTasks[statusKey][taskIndex] = updatedTask;
+                    break;
+                }
+            }
+            
+            // Update the task in upcomingTasks if it exists there
+            const upcomingIndex = state.upcomingTasks.findIndex(t => t.id === updatedTask.id);
+            if (upcomingIndex !== -1) {
+                state.upcomingTasks[upcomingIndex] = updatedTask;
+            }
+        });
+
+        builder.addCase(unlinkTagFromTask.fulfilled, (state, action) => {
+            const { updatedTask } = action.payload;
+            
+            // Update the editing task to show removed tags immediately
+            if (state.editingTask && state.editingTask.id === updatedTask.id) {
+                state.editingTask = updatedTask;
+            }
+            
+            // Update the task in todayTasks if it exists there
+            for (const status in state.todayTasks) {
+                const statusKey = status as keyof TasksGroupedByStatus;
+                const taskIndex = state.todayTasks[statusKey].findIndex(t => t.id === updatedTask.id);
+                if (taskIndex !== -1) {
+                    state.todayTasks[statusKey][taskIndex] = updatedTask;
+                    break;
+                }
+            }
+            
+            // Update the task in upcomingTasks if it exists there
+            const upcomingIndex = state.upcomingTasks.findIndex(t => t.id === updatedTask.id);
+            if (upcomingIndex !== -1) {
+                state.upcomingTasks[upcomingIndex] = updatedTask;
+            }
         });
     }
 });
