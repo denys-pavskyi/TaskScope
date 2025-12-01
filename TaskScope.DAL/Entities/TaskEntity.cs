@@ -8,7 +8,13 @@ public class TaskEntity
 {
     [Key]
     public Guid Id { get; set; }
+
+    [Required]
+    [MaxLength(150)]
     public string Title { get; set; } = null!;
+
+    [Required]
+    [MaxLength(500)]
     public string? Description { get; set; }
     public TaskPriority Priority { get; set; }
     public TaskEntityStatus Status { get; set; }
