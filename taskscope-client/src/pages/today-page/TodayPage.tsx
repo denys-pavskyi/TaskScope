@@ -25,6 +25,9 @@ const columnConfig = {
         badge: '#52c41a'
     }
 };
+
+const COLUMN_ORDER: (keyof TasksGroupedByStatus)[] = ['Todo', 'InProgress', 'Done'];
+
 export const TodayPage = () => {
     const [taskGroups, setTaskGroups] = useState<TasksGroupedByStatus>({
         Todo: [],
@@ -83,7 +86,7 @@ export const TodayPage = () => {
         <div className="today-page">
             <h1 className="today-page-title">Today</h1>
             <div className="today-page-columns">
-                {Object.entries(taskGroups).map(([status, tasks]) => (
+                {COLUMN_ORDER.map((status) => (
                         <Card 
                             key={status}
                             className="task-column"
@@ -92,7 +95,7 @@ export const TodayPage = () => {
                                     {columnConfig[status as keyof typeof columnConfig].icon}
                                     <span className="column-title">{status}</span>
                                     <Badge 
-                                        count={tasks.length} 
+                                        count={taskGroups[status].length} 
                                         style={{ 
                                             backgroundColor: columnConfig[status as keyof typeof columnConfig].badge,
                                             marginLeft: 'auto'
@@ -105,7 +108,7 @@ export const TodayPage = () => {
                             }}
                         >
                             <div className="task-list">
-                            {tasks.map((task: TaskEntityDto) => (
+                            {taskGroups[status].map((task: TaskEntityDto) => (
                                 <TaskCard 
                                     key={task.id}
                                     task={task}
