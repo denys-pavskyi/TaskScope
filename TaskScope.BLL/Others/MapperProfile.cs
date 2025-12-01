@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using TaskScope.BLL.Models.Dtos.Tags;
 using TaskScope.BLL.Models.Dtos.Tasks;
+using TaskScope.BLL.Models.Dtos.TaskEntityTags;
 using TaskScope.DAL.Entities;
 
 namespace TaskScope.BLL.Others;
@@ -22,6 +23,10 @@ public class MapperProfile : Profile
         CreateMap<Tag, TagDto>();
         CreateMap<CreateTagDto, Tag>();
         CreateMap<UpdateTagDto, Tag>();
+
+        // TaskEntityTag mappings
+        CreateMap<TaskEntityTag, TaskEntityTagDto>();
+        CreateMap<CreateTaskEntityTagDto, TaskEntityTag>();
     }
 
 }

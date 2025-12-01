@@ -48,6 +48,7 @@
   <ItemGroup>
     <Folder Include="MediatR\Tags\Delete\" />
     <Folder Include="Others\" />
+    <Folder Include="Validators\TaskEntityTags\" />
   </ItemGroup>
 
 </Project>
