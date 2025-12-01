@@ -91,7 +91,6 @@ namespace TaskScope.API.Controllers
         }
 
         [HttpDelete]
-        [HttpGet("task/{taskId:guid}")]
         public async Task<IActionResult> Delete(Guid TaskId,
             CancellationToken cancellationToken)
         {

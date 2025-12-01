@@ -54,7 +54,6 @@ namespace TaskScope.API.Controllers
         }
 
         [HttpDelete]
-        [HttpGet("tag/{taskId:guid}")]
         public async Task<IActionResult> Delete(Guid TagId,
             CancellationToken cancellationToken)
         {
