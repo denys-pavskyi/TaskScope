@@ -21,13 +21,20 @@ const priorityColorMap = {
 interface TaskCardProps {
     task: TaskEntityDto;
     onStatusChange?: (taskId: string, newStatus: TaskEntityStatus) => void;
+    onEdit?: (task: TaskEntityDto) => void;
 }
 
-export const TaskCard = ({ task, onStatusChange }: TaskCardProps) => {
+export const TaskCard = ({ task, onStatusChange, onEdit }: TaskCardProps) => {
     const handleStatusChange = (newStatus: TaskEntityStatus) => {
         if (onStatusChange) {
             onStatusChange(task.id, newStatus);
             console.log(`Status changed to ${newStatus} for task ${task.id}`);
+        }
+    };
+
+    const handleCardClick = () => {
+        if (onEdit) {
+            onEdit(task);
         }
     };
 
@@ -40,6 +47,7 @@ export const TaskCard = ({ task, onStatusChange }: TaskCardProps) => {
     return (
         <Card 
             className="task-card"
+            onClick={handleCardClick}
             title={
                 <div className="task-header">
                     <span className="task-title">{task.title}</span>
@@ -47,7 +55,8 @@ export const TaskCard = ({ task, onStatusChange }: TaskCardProps) => {
             }
             style={{ 
                 borderLeft: `3px solid ${priorityColorMap[task.priority]}`,
-                width: '100%'
+                width: '100%',
+                cursor: onEdit ? 'pointer' : 'default'
             }}
         >
             <p>{task.description || "No description"}</p>
@@ -65,7 +74,7 @@ export const TaskCard = ({ task, onStatusChange }: TaskCardProps) => {
                         </Tag>
                     ))}
                 </div>
-                <div className="task-meta">
+                <div className="task-meta" onClick={(e) => e.stopPropagation()}>
                     <Dropdown
                         menu={{
                             items,

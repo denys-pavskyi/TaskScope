@@ -1,13 +1,17 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState, useMemo } from "react";
 import "./TodayPage.scss";
 import type { TaskEntityDto } from "../../models/TaskEntityDto";
+import type { CreateTaskDto } from "../../models/CreateTaskDto";
+import type { UpdateTaskDto } from "../../models/UpdateTaskDto";
 import { TaskEntityStatus } from "../../models/enums/TaskEntityStatus";
 import { TaskCard } from "../../components/public/task-card/TaskCard";
+import { TaskModal } from "../../components/public/task-modal/TaskModal";
 import { Card, Badge, message } from "antd";
 import { CheckCircleOutlined, ClockCircleOutlined, InboxOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { fetchTodayTasks, changeTaskStatus } from "../../store/slices/tasksSlice";
+import { fetchTodayTasks, changeTaskStatus, addTask, editTask } from "../../store/slices/tasksSlice";
 import type { TasksGroupedByStatus } from "../../models/TasksGroupedByStatus";
+import addPostIcon from "../../assets/add-post.png";
 
 const columnConfig = {
     Todo: {
@@ -32,6 +36,18 @@ const COLUMN_ORDER: (keyof TasksGroupedByStatus)[] = ['Todo', 'InProgress', 'Don
 export const TodayPage = () => {
     const dispatch = useAppDispatch();
     const { todayTasks, loading } = useAppSelector((state) => state.tasks);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingTask, setEditingTask] = useState<TaskEntityDto | undefined>(undefined);
+
+    // Sort tasks by priority (Critical > High > Medium > Low)
+    const sortedTasks = useMemo(() => {
+        const sorted: TasksGroupedByStatus = {
+            Todo: [...todayTasks.Todo].sort((a, b) => b.priority - a.priority),
+            InProgress: [...todayTasks.InProgress].sort((a, b) => b.priority - a.priority),
+            Done: [...todayTasks.Done].sort((a, b) => b.priority - a.priority),
+        };
+        return sorted;
+    }, [todayTasks]);
 
     useEffect(() => {
         dispatch(fetchTodayTasks());
@@ -46,11 +62,42 @@ export const TodayPage = () => {
         }
     }, [dispatch]);
 
+    const handleOpenModal = (task?: TaskEntityDto) => {
+        setEditingTask(task);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setEditingTask(undefined);
+    };
+
+    const handleSubmitTask = async (taskData: CreateTaskDto | UpdateTaskDto) => {
+        try {
+            if ('id' in taskData) {
+                await dispatch(editTask(taskData)).unwrap();
+                message.success('Task updated successfully');
+            } else {
+                await dispatch(addTask(taskData)).unwrap();
+                message.success('Task created successfully');
+            }
+        } catch (error) {
+            message.error('Failed to save task');
+            throw error;
+        }
+    };
+
     if (loading) return <div className="today-page">Loading...</div>;
 
     return (
         <div className="today-page">
-            <h1 className="today-page-title">Today</h1>
+            <div className="today-page-header">
+                <button className="add-task-button" onClick={() => handleOpenModal()}>
+                    <img src={addPostIcon} alt="Add task" />
+                    <span>Add</span>
+                </button>
+                <h1 className="today-page-title">Today</h1>
+            </div>
             <div className="today-page-columns">
                 {COLUMN_ORDER.map((status) => (
                         <Card 
@@ -61,7 +108,7 @@ export const TodayPage = () => {
                                     {columnConfig[status as keyof typeof columnConfig].icon}
                                     <span className="column-title">{status}</span>
                                     <Badge 
-                                        count={todayTasks[status].length} 
+                                        count={sortedTasks[status].length} 
                                         style={{ 
                                             backgroundColor: columnConfig[status as keyof typeof columnConfig].badge,
                                             marginLeft: 'auto'
@@ -74,17 +121,25 @@ export const TodayPage = () => {
                             }}
                         >
                             <div className="task-list">
-                            {todayTasks[status].map((task: TaskEntityDto) => (
+                            {sortedTasks[status].map((task: TaskEntityDto) => (
                                 <TaskCard 
                                     key={task.id}
                                     task={task}
                                     onStatusChange={handleTaskStatusChange}
+                                    onEdit={handleOpenModal}
                                 />
                             ))}
                         </div>
                         </Card>
                 ))}
             </div>
+            
+            <TaskModal
+                open={isModalOpen}
+                onClose={handleCloseModal}
+                onSubmit={handleSubmitTask}
+                task={editingTask}
+            />
         </div>
     );
 };
