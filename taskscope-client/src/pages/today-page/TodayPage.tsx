@@ -1,12 +1,13 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import "./TodayPage.scss";
-import { getTodaysTasks, updateTaskStatus } from "../../services/tasksService";
-import type { TasksGroupedByStatus } from "../../models/TasksGroupedByStatus";
 import type { TaskEntityDto } from "../../models/TaskEntityDto";
 import { TaskEntityStatus } from "../../models/enums/TaskEntityStatus";
 import { TaskCard } from "../../components/public/task-card/TaskCard";
 import { Card, Badge, message } from "antd";
 import { CheckCircleOutlined, ClockCircleOutlined, InboxOutlined } from '@ant-design/icons';
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { fetchTodayTasks, changeTaskStatus } from "../../store/slices/tasksSlice";
+import type { TasksGroupedByStatus } from "../../models/TasksGroupedByStatus";
 
 const columnConfig = {
     Todo: {
@@ -29,56 +30,28 @@ const columnConfig = {
 const COLUMN_ORDER: (keyof TasksGroupedByStatus)[] = ['Todo', 'InProgress', 'Done'];
 
 export const TodayPage = () => {
-    const [taskGroups, setTaskGroups] = useState<TasksGroupedByStatus>({
-        Todo: [],
-        InProgress: [],
-        Done: []
-    });
-    const [loading, setLoading] = useState(true);
+    const dispatch = useAppDispatch();
+    const { todayTasks, loading, error } = useAppSelector((state) => state.tasks);
 
     useEffect(() => {
-        const fetchTasks = async () => {
-            try {
-                const result = await getTodaysTasks();
-                console.log("Fetched today's tasks:", result);
-                setTaskGroups(result);
-            } catch (error) {
-                console.error("Error fetching tasks", error);
-                message.error("Failed to fetch tasks");
-            } finally {
-                setLoading(false);
-            }
-        };
+        dispatch(fetchTodayTasks());
+    }, [dispatch]);
 
-        fetchTasks();
-    }, []);
+    useEffect(() => {
+        if (error) {
+            message.error(error);
+        }
+    }, [error]);
 
     const handleTaskStatusChange = useCallback(async (taskId: string, newStatus: TaskEntityStatus) => {
         try {
-            const updatedTask = await updateTaskStatus(taskId, newStatus);
-
-            setTaskGroups(prev => {
-                const oldStatusKey = (Object.entries(prev).find(([_, tasks]) =>
-                    tasks.some((t: TaskEntityDto) => t.id === taskId)
-                )?.[0]) as keyof TasksGroupedByStatus | undefined;
-
-                if (!oldStatusKey) return prev;
-
-                const newStatusKey = TaskEntityStatus[newStatus] as unknown as keyof TasksGroupedByStatus;
-
-                return {
-                    ...prev,
-                    [oldStatusKey]: prev[oldStatusKey].filter(t => t.id !== taskId),
-                    [newStatusKey]: [...prev[newStatusKey], updatedTask]
-                };
-            });
-
+            await dispatch(changeTaskStatus({ taskId, newStatus })).unwrap();
             message.success(`Task moved to ${TaskEntityStatus[newStatus]}`);
         } catch (error) {
             console.error("Failed to update task status", error);
             message.error("Failed to update task status");
         }
-    }, []);
+    }, [dispatch]);
 
     if (loading) return <div className="today-page">Loading...</div>;
 
@@ -95,7 +68,7 @@ export const TodayPage = () => {
                                     {columnConfig[status as keyof typeof columnConfig].icon}
                                     <span className="column-title">{status}</span>
                                     <Badge 
-                                        count={taskGroups[status].length} 
+                                        count={todayTasks[status].length} 
                                         style={{ 
                                             backgroundColor: columnConfig[status as keyof typeof columnConfig].badge,
                                             marginLeft: 'auto'
@@ -108,7 +81,7 @@ export const TodayPage = () => {
                             }}
                         >
                             <div className="task-list">
-                            {taskGroups[status].map((task: TaskEntityDto) => (
+                            {todayTasks[status].map((task: TaskEntityDto) => (
                                 <TaskCard 
                                     key={task.id}
                                     task={task}
