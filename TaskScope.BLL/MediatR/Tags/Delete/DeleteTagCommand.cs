@@ -5,4 +5,4 @@ using TaskScope.BLL.Models.Dtos.Tasks;
 
 namespace TaskScope.BLL.MediatR.Tags.Delete;
 
-public record DeleteTagCommand(Guid Id, Guid UserId) : IRequest<Result<TagDto>>;
+public record DeleteTagCommand(Guid Id) : IRequest<Result<TagDto>>;

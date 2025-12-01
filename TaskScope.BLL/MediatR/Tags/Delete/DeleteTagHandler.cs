@@ -29,11 +29,6 @@ public class DeleteTagHandler : IRequestHandler<DeleteTagCommand, Result<TagDto>
             return Result.Fail("Tag not found");
         }
 
-        if (!tag.UserId.Equals(request.UserId))
-        {
-            return Result.Fail("User doesn't have access to this tag");
-        }
-
         _repositoryWrapper.TagRepository.Delete(tag);
         var resultIsSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
         if (resultIsSuccess)

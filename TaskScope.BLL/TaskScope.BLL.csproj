@@ -8,8 +8,11 @@
 
   <ItemGroup>
     <Compile Remove="MediatR\Tags\NewFolder\**" />
+    <Compile Remove="MediatR\Users\**" />
     <EmbeddedResource Remove="MediatR\Tags\NewFolder\**" />
+    <EmbeddedResource Remove="MediatR\Users\**" />
     <None Remove="MediatR\Tags\NewFolder\**" />
+    <None Remove="MediatR\Users\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,7 +44,6 @@
 
   <ItemGroup>
     <Folder Include="MediatR\Tags\Delete\" />
-    <Folder Include="MediatR\Users\" />
     <Folder Include="Models\Dtos\Tags\" />
     <Folder Include="Others\" />
   </ItemGroup>

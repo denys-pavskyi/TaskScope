@@ -27,11 +27,6 @@ public class DeleteTaskHandler : IRequestHandler<DeleteTaskCommand, Result<TaskE
             return Result.Fail("Task not found");
         }
 
-        if (!task.UserId.Equals(request.UserId))
-        {
-            return Result.Fail("User doesn't have access to this task");
-        }
-
         _repositoryWrapper.TaskRepository.Delete(task);
         var resultIsSuccess = await _repositoryWrapper.SaveChangesAsync() > 0;
         if (resultIsSuccess)

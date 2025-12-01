@@ -19,7 +19,7 @@ public class GetTodayAndOverdueTasksGroupedByStatusHandler : IRequestHandler<Get
     } 
     public async Task<Result<Dictionary<TaskEntityStatus, List<TaskEntityDto>>>> Handle(GetTodayAndOverdueTasksGroupedByStatusQuery request, CancellationToken cancellationToken) 
     { 
-        var tasks = await _repositoryWrapper.TaskRepository.GetTodayAndOverdueByUserIdAsync(request.UserId); 
+        var tasks = await _repositoryWrapper.TaskRepository.GetTodayAndOverdueAsync(); 
         var taskDtos = _mapper.Map<IEnumerable<TaskEntityDto>>(tasks); 
         var grouped = taskDtos
             .GroupBy(t => t.Status)

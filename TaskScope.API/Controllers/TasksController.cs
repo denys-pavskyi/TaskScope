@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskScope.BLL.MediatR.Tasks.Create;
 using TaskScope.BLL.MediatR.Tasks.Delete;
-using TaskScope.BLL.MediatR.Tasks.GetAllByUserId;
+using TaskScope.BLL.MediatR.Tasks.GetAll;
 using TaskScope.BLL.MediatR.Tasks.GetTaskById;
 using TaskScope.BLL.MediatR.Tasks.GetTasksByTag;
 using TaskScope.BLL.MediatR.Tasks.Update;
@@ -16,14 +16,13 @@ namespace TaskScope.API.Controllers
     [ApiController]
     public class TasksController : BaseApiController
     {
-        [HttpGet("user/{userId:guid}")]
-        public async Task<IActionResult> GetByUserId(
-            Guid userId,
+        [HttpGet]
+        public async Task<IActionResult> GetAll(
             [FromQuery] DateTime? startDate,
             [FromQuery] DateTime? endDate,
             CancellationToken cancellationToken)
         {
-            var query = new GetTasksByUserIdQuery(userId, startDate, endDate);
+            var query = new GetAllTasksQuery(startDate, endDate);
             var result = await Mediator.Send(query, cancellationToken);
             var resultValue = result.ValueOrDefault;
 
@@ -48,10 +47,10 @@ namespace TaskScope.API.Controllers
             return Ok(resultValue);
         }
 
-        [HttpGet("tag/{tagId:guid}/user/{userId:guid}")]
-        public async Task<IActionResult> GetByTag(Guid tagId, Guid userId, CancellationToken cancellationToken)
+        [HttpGet("tag/{tagId:guid}")]
+        public async Task<IActionResult> GetByTag(Guid tagId, CancellationToken cancellationToken)
         {
-            var query = new GetTasksByTagQuery(userId, tagId);
+            var query = new GetTasksByTagQuery(tagId);
             var result = await Mediator.Send(query, cancellationToken);
             var resultValue = result.ValueOrDefault;
 
@@ -92,11 +91,11 @@ namespace TaskScope.API.Controllers
         }
 
         [HttpDelete]
-        [HttpGet("user/{userId:guid}/task/{taskId:guid}")]
-        public async Task<IActionResult> Delete(Guid UserId, Guid TaskId,
+        [HttpGet("task/{taskId:guid}")]
+        public async Task<IActionResult> Delete(Guid TaskId,
             CancellationToken cancellationToken)
         {
-            var command = new DeleteTaskCommand(TaskId, UserId);
+            var command = new DeleteTaskCommand(TaskId);
 
             var result = await Mediator.Send(command, cancellationToken);
             var resultValue = result.ValueOrDefault;
@@ -108,10 +107,10 @@ namespace TaskScope.API.Controllers
             return Ok(resultValue);
         }
 
-        [HttpGet("today/{userId:guid}")]
-        public async Task<IActionResult> GetTodayAndOverdueGroupedByStatus(Guid userId, CancellationToken cancellationToken)
+        [HttpGet("today")]
+        public async Task<IActionResult> GetTodayAndOverdueGroupedByStatus(CancellationToken cancellationToken)
         {
-            var query = new GetTodayAndOverdueTasksGroupedByStatusQuery(userId);
+            var query = new GetTodayAndOverdueTasksGroupedByStatusQuery();
             var result = await Mediator.Send(query, cancellationToken);
             var resultValue = result.ValueOrDefault;
 

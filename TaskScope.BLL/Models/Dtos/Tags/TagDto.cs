@@ -6,5 +6,4 @@ public class TagDto
     public string Name { get; set; } = null!;
     public string? Color { get; set; }
     public DateTime CreatedAt { get; set; }
-    public Guid UserId { get; set; }
 }

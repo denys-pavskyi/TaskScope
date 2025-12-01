@@ -5,5 +5,5 @@ using TaskScope.DAL.Enums;
 
 namespace TaskScope.BLL.MediatR.Tasks.GetTodayAndOverdueGroupedByStatus;
 
-public record GetTodayAndOverdueTasksGroupedByStatusQuery(Guid UserId)
+public record GetTodayAndOverdueTasksGroupedByStatusQuery()
  : IRequest<Result<Dictionary<TaskEntityStatus, List<TaskEntityDto>>>>;

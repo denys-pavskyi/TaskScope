@@ -6,7 +6,7 @@ using TaskScope.BLL.MediatR.Tags.GetAll;
 using TaskScope.BLL.MediatR.Tags.Update;
 using TaskScope.BLL.MediatR.Tasks.Create;
 using TaskScope.BLL.MediatR.Tasks.Delete;
-using TaskScope.BLL.MediatR.Tasks.GetAllByUserId;
+using TaskScope.BLL.MediatR.Tasks.GetAll;
 using TaskScope.BLL.MediatR.Tasks.Update;
 
 namespace TaskScope.API.Controllers
@@ -16,12 +16,11 @@ namespace TaskScope.API.Controllers
     public class TagController : BaseApiController
     {
 
-        [HttpGet("user/{userId:guid}")]
-        public async Task<IActionResult> GetAllByUserId(
-            Guid userId,
+        [HttpGet]
+        public async Task<IActionResult> GetAll(
             CancellationToken cancellationToken)
         {
-            var query = new GetAllTagsByUserIdQuery(userId);
+            var query = new GetAllTagsQuery();
             var result = await Mediator.Send(query, cancellationToken);
             var resultValue = result.ValueOrDefault;
 
@@ -60,11 +59,11 @@ namespace TaskScope.API.Controllers
         }
 
         [HttpDelete]
-        [HttpGet("user/{userId:guid}/tag/{taskId:guid}")]
-        public async Task<IActionResult> Delete(Guid UserId, Guid TagId,
+        [HttpGet("tag/{taskId:guid}")]
+        public async Task<IActionResult> Delete(Guid TagId,
             CancellationToken cancellationToken)
         {
-            var command = new DeleteTagCommand(TagId, UserId);
+            var command = new DeleteTagCommand(TagId);
 
             var result = await Mediator.Send(command, cancellationToken);
             var resultValue = result.ValueOrDefault;

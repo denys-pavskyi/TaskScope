@@ -21,7 +21,7 @@ public class GetTasksByTagHandler : IRequestHandler<GetTasksByTagQuery, Result<I
     public async Task<Result<IEnumerable<TaskEntityDto>>> Handle(GetTasksByTagQuery request, CancellationToken cancellationToken)
     {
         var tasks = await _repositoryWrapper.TaskRepository.GetAllAsync(
-            predicate: t => t.TaskTags.Any(tt => tt.TagId == request.TagId && tt.UserId == request.UserId),
+            predicate: t => t.TaskTags.Any(tt => tt.TagId == request.TagId),
             include: query => query
                 .Include(t => t.TaskTags)
                 .ThenInclude(tt => tt.Tag)
