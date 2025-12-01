@@ -19,6 +19,8 @@ public class GetTodayAndOverdueTasksGroupedByStatusHandler : IRequestHandler<Get
     } 
     public async Task<Result<Dictionary<TaskEntityStatus, List<TaskEntityDto>>>> Handle(GetTodayAndOverdueTasksGroupedByStatusQuery request, CancellationToken cancellationToken) 
     { 
+        var utcPlus2 = TimeZoneInfo.FindSystemTimeZoneById("E. Europe Standard Time");
+        var today = TimeZoneInfo.ConvertTime(DateTime.UtcNow, utcPlus2).Date;
         var tasks = await _repositoryWrapper.TaskRepository.GetTodayAndOverdueAsync(); 
         var taskDtos = _mapper.Map<IEnumerable<TaskEntityDto>>(tasks); 
         var grouped = taskDtos

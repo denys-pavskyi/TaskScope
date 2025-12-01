@@ -19,7 +19,8 @@ public class GetUpcomingTasksHandler : IRequestHandler<GetUpcomingTasksQuery, Re
 
     public async Task<Result<List<TaskEntityDto>>> Handle(GetUpcomingTasksQuery request, CancellationToken cancellationToken)
     {
-        var today = DateTime.UtcNow.Date;
+        var utcPlus2 = TimeZoneInfo.FindSystemTimeZoneById("E. Europe Standard Time");
+        var today = TimeZoneInfo.ConvertTime(DateTime.UtcNow, utcPlus2).Date;
         var tasks = await _repositoryWrapper.TaskRepository.GetAllAsync(startDate: today.AddDays(1));
         var taskDtos = _mapper.Map<List<TaskEntityDto>>(tasks);
 

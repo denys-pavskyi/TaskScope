@@ -39,3 +39,9 @@ export async function getTaskById(taskId: string): Promise<TaskEntityDto> {
     const response = await apiClient.get(`/Tasks/${taskId}`);
     return response.data;
 }
+
+export async function deleteTask(taskId: string): Promise<void> {
+    await apiClient.delete(`/Tasks`, {
+        params: { taskId }
+    });
+}

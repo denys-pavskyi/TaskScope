@@ -5,7 +5,7 @@ import type { TaskEntityDto } from "../../models/tasks/TaskEntityDto";
 import type { CreateTaskDto } from "../../models/tasks/CreateTaskDto";
 import type { UpdateTaskDto } from "../../models/tasks/UpdateTaskDto";
 import { TaskEntityStatus } from "../../models/enums/TaskEntityStatus";
-import { getTodaysTasks, getUpcomingTasks, updateTaskStatus, createTask, updateTask } from "../../services/tasksService";
+import { getTodaysTasks, getUpcomingTasks, updateTaskStatus, createTask, updateTask, deleteTask as deleteTaskApi } from "../../services/tasksService";
 import { linkTagToTask, unlinkTagFromTask } from "./taskTagsSlice";
 
 interface TasksState {
@@ -15,6 +15,7 @@ interface TasksState {
     error: string | null;
     isModalOpen: boolean;
     editingTask: TaskEntityDto | null;
+    isDeleteConfirmOpen: boolean;
 }
 
 const initialState: TasksState = {
@@ -28,6 +29,7 @@ const initialState: TasksState = {
     error: null,
     isModalOpen: false,
     editingTask: null,
+    isDeleteConfirmOpen: false,
 };
 
 // thunks
@@ -91,6 +93,18 @@ export const editTask = createAsyncThunk(
     }
 );
 
+export const deleteTask = createAsyncThunk(
+    'tasks/deleteTask',
+    async (taskId: string, { rejectWithValue }) => {
+        try {
+            await deleteTaskApi(taskId);
+            return taskId;
+        } catch (error) {
+            return rejectWithValue('Failed to delete task');
+        }
+    }
+);
+
 const tasksSlice = createSlice({
     name: 'tasks',
     initialState,
@@ -109,6 +123,12 @@ const tasksSlice = createSlice({
         closeTaskModal: (state) => {
             state.isModalOpen = false;
             state.editingTask = null;
+        },
+        openDeleteConfirm: (state) => {
+            state.isDeleteConfirmOpen = true;
+        },
+        closeDeleteConfirm: (state) => {
+            state.isDeleteConfirmOpen = false;
         },
     },
     extraReducers: (builder) => {
@@ -273,8 +293,31 @@ const tasksSlice = createSlice({
                 state.upcomingTasks[upcomingIndex] = updatedTask;
             }
         });
+
+        // Delete task
+        builder.addCase(deleteTask.fulfilled, (state, action) => {
+            const taskId = action.payload;
+            
+            // Remove from todayTasks
+            for (const status in state.todayTasks) {
+                const statusKey = status as keyof TasksGroupedByStatus;
+                state.todayTasks[statusKey] = state.todayTasks[statusKey].filter(t => t.id !== taskId);
+            }
+            
+            // Remove from upcomingTasks
+            state.upcomingTasks = state.upcomingTasks.filter(t => t.id !== taskId);
+            
+            // Close modal and clear editing task
+            state.isModalOpen = false;
+            state.editingTask = null;
+            state.isDeleteConfirmOpen = false;
+        });
+        builder.addCase(deleteTask.rejected, (state, action) => {
+            state.error = action.payload as string;
+            state.isDeleteConfirmOpen = false;
+        });
     }
 });
 
-export const { clearError, openCreateTaskModal, openEditTaskModal, closeTaskModal } = tasksSlice.actions;
+export const { clearError, openCreateTaskModal, openEditTaskModal, closeTaskModal, openDeleteConfirm, closeDeleteConfirm } = tasksSlice.actions;
 export default tasksSlice.reducer;
