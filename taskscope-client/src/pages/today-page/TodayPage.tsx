@@ -31,17 +31,11 @@ const COLUMN_ORDER: (keyof TasksGroupedByStatus)[] = ['Todo', 'InProgress', 'Don
 
 export const TodayPage = () => {
     const dispatch = useAppDispatch();
-    const { todayTasks, loading, error } = useAppSelector((state) => state.tasks);
+    const { todayTasks, loading } = useAppSelector((state) => state.tasks);
 
     useEffect(() => {
         dispatch(fetchTodayTasks());
     }, [dispatch]);
-
-    useEffect(() => {
-        if (error) {
-            message.error(error);
-        }
-    }, [error]);
 
     const handleTaskStatusChange = useCallback(async (taskId: string, newStatus: TaskEntityStatus) => {
         try {
@@ -49,7 +43,6 @@ export const TodayPage = () => {
             message.success(`Task moved to ${TaskEntityStatus[newStatus]}`);
         } catch (error) {
             console.error("Failed to update task status", error);
-            message.error("Failed to update task status");
         }
     }, [dispatch]);
 

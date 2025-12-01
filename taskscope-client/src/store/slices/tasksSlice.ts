@@ -29,7 +29,8 @@ export const fetchTodayTasks = createAsyncThunk(
             const result = await getTodaysTasks();
             return result;
         } catch (error) {
-            return rejectWithValue(error instanceof Error ? error.message : 'Failed to fetch tasks');
+            // Error toast is shown automatically by apiClient interceptor
+            return rejectWithValue('Failed to fetch tasks');
         }
     }
 );
@@ -41,7 +42,8 @@ export const changeTaskStatus = createAsyncThunk(
             const updatedTask = await updateTaskStatus(taskId, newStatus);
             return { taskId, newStatus, updatedTask };
         } catch (error) {
-            return rejectWithValue(error instanceof Error ? error.message : 'Failed to update task status');
+            // Error toast is shown automatically by apiClient interceptor
+            return rejectWithValue('Failed to update task status');
         }
     }
 );
