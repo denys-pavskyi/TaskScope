@@ -1,0 +1,40 @@
+.tag-modal {
+    .color-picker {
+        height: 50px;
+        cursor: pointer;
+        padding: 4px;
+        
+        &::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        
+        &::-webkit-color-swatch {
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+        }
+    }
+
+    .tag-preview-section {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #f0f0f0;
+
+        .preview-label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(0, 0, 0, 0.85);
+            font-weight: 500;
+        }
+
+        .tag-preview {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 16px;
+            border-radius: 16px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    }
+}
