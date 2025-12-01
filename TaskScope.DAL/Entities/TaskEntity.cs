@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 using TaskScope.DAL.Enums;
 
 namespace TaskScope.DAL.Entities;
@@ -13,7 +14,6 @@ public class TaskEntity
     [MaxLength(150)]
     public string Title { get; set; } = null!;
 
-    [Required]
     [MaxLength(500)]
     public string? Description { get; set; }
     public TaskPriority Priority { get; set; }
