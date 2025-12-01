@@ -6,6 +6,7 @@ using TaskScope.BLL.MediatR.Tasks.GetAll;
 using TaskScope.BLL.MediatR.Tasks.GetTaskById;
 using TaskScope.BLL.MediatR.Tasks.GetTasksByTag;
 using TaskScope.BLL.MediatR.Tasks.GetTodayAndOverdueGroupedByStatus;
+using TaskScope.BLL.MediatR.Tasks.GetUpcomingTasks;
 using TaskScope.BLL.MediatR.Tasks.Update;
 using TaskScope.BLL.MediatR.Tasks.UpdateTaskStatus;
 using TaskScope.BLL.Models.Dtos.Tasks;
@@ -126,6 +127,19 @@ namespace TaskScope.API.Controllers
             var resultValue = result.ValueOrDefault;
 
             if (resultValue == null || !resultValue.Any())
+                return NoContent();
+
+            return Ok(resultValue);
+        }
+
+        [HttpGet("upcoming")]
+        public async Task<IActionResult> GetUpcomingTasks(CancellationToken cancellationToken)
+        {
+            var query = new GetUpcomingTasksQuery();
+            var result = await Mediator.Send(query, cancellationToken);
+            var resultValue = result.ValueOrDefault;
+
+            if (resultValue is null || !resultValue.Any())
                 return NoContent();
 
             return Ok(resultValue);
