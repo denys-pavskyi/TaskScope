@@ -29,6 +29,10 @@ namespace TaskScope.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateTagCommand command,
             CancellationToken cancellationToken)
         {
+            var validationError = await ValidateRequestAsync(command, cancellationToken);
+            if (validationError != null)
+                return validationError;
+
             var result = await Mediator.Send(command, cancellationToken);
             var resultValue = result.ValueOrDefault;
             if (result.IsFailed || resultValue == null)
@@ -43,6 +47,10 @@ namespace TaskScope.API.Controllers
         public async Task<IActionResult> Update([FromBody] UpdateTagCommand command,
             CancellationToken cancellationToken)
         {
+            var validationError = await ValidateRequestAsync(command, cancellationToken);
+            if (validationError != null)
+                return validationError;
+
             var result = await Mediator.Send(command, cancellationToken);
             var resultValue = result.ValueOrDefault;
             if (result.IsFailed || resultValue == null)
@@ -58,6 +66,10 @@ namespace TaskScope.API.Controllers
             CancellationToken cancellationToken)
         {
             var command = new DeleteTagCommand(TagId);
+            
+            var validationError = await ValidateRequestAsync(command, cancellationToken);
+            if (validationError != null)
+                return validationError;
 
             var result = await Mediator.Send(command, cancellationToken);
             var resultValue = result.ValueOrDefault;

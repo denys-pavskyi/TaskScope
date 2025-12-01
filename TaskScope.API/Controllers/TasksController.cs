@@ -66,6 +66,10 @@ namespace TaskScope.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateTaskCommand command,
             CancellationToken cancellationToken)
         {
+            var validationError = await ValidateRequestAsync(command, cancellationToken);
+            if (validationError != null)
+                return validationError;
+
             var result = await Mediator.Send(command, cancellationToken);
             var resultValue = result.ValueOrDefault;
             if (result.IsFailed || resultValue == null)
@@ -80,6 +84,10 @@ namespace TaskScope.API.Controllers
         public async Task<IActionResult> Update([FromBody] UpdateTaskCommand command,
             CancellationToken cancellationToken)
         {
+            var validationError = await ValidateRequestAsync(command, cancellationToken);
+            if (validationError != null)
+                return validationError;
+
             var result = await Mediator.Send(command, cancellationToken);
             var resultValue = result.ValueOrDefault;
             if (result.IsFailed || resultValue == null)
@@ -95,6 +103,10 @@ namespace TaskScope.API.Controllers
             CancellationToken cancellationToken)
         {
             var command = new DeleteTaskCommand(TaskId);
+            
+            var validationError = await ValidateRequestAsync(command, cancellationToken);
+            if (validationError != null)
+                return validationError;
 
             var result = await Mediator.Send(command, cancellationToken);
             var resultValue = result.ValueOrDefault;
@@ -122,8 +134,12 @@ namespace TaskScope.API.Controllers
         [HttpPatch("updateStatus")]
         public async Task<IActionResult> UpdateTaskStatus(Guid taskId, TaskEntityStatus newStatus, CancellationToken cancellationToken)
         {
-
             var command = new UpdateTaskStatusCommand(taskId, newStatus);
+            
+            var validationError = await ValidateRequestAsync(command, cancellationToken);
+            if (validationError != null)
+                return validationError;
+
             var result = await Mediator.Send(command, cancellationToken);
             var resultValue = result.ValueOrDefault;
             if (result.IsFailed || resultValue == null)

@@ -5,7 +5,6 @@ using FluentValidation;
 using MediatR;
 using TaskScope.API.Middlewares;
 using TaskScope.API.Models;
-using TaskScope.BLL.MediatR.Behaviors;
 using TaskScope.BLL.Others;
 using TaskScope.DAL.Persistence;
 using TaskScope.DAL.Repositories.Interfaces.Base;
@@ -32,9 +31,6 @@ namespace TaskScope.API
 
             // Register FluentValidation
             builder.Services.AddValidatorsFromAssemblies(currentAssemblies);
-            
-            // Register MediatR validation behavior
-            builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             // Repository
             builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
