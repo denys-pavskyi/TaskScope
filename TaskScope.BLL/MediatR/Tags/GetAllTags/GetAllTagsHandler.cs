@@ -21,7 +21,7 @@ public class GetAllTagsHandler : IRequestHandler<GetAllTagsQuery, Result<IEnumer
 
     public async Task<Result<IEnumerable<TagDto>>> Handle(GetAllTagsQuery request, CancellationToken cancellationToken)
     {
-        var tags = await _repositoryWrapper.TaskRepository.GetAllAsync();
+        var tags = await _repositoryWrapper.TagRepository.GetAllAsync();
         var tagsDtos = _mapper.Map<IEnumerable<TagDto>>(tags);
         return Result.Ok(tagsDtos);
     }

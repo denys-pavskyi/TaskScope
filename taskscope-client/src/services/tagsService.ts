@@ -21,7 +21,7 @@ export async function updateTag(tag: UpdateTagDto): Promise<TagDto> {
 export async function deleteTag(tagId: string): Promise<void> {
     await apiClient.delete(`/Tag`, {
         params: {
-            id: tagId
+            tagId: tagId
         }
     });
 }

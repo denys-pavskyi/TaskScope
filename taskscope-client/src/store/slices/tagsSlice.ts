@@ -9,12 +9,18 @@ interface TagsState {
     tags: TagDto[];
     loading: boolean;
     error: string | null;
+    isModalOpen: boolean;
+    editingTag: TagDto | null;
+    deletingTag: TagDto | null;
 }
 
 const initialState: TagsState = {
     tags: [],
     loading: false,
-    error: null
+    error: null,
+    isModalOpen: false,
+    editingTag: null,
+    deletingTag: null,
 };
 
 // Thunks
@@ -72,7 +78,25 @@ const tagsSlice = createSlice({
     reducers: {
         clearError: (state) => {
             state.error = null;
-        }
+        },
+        openCreateModal: (state) => {
+            state.isModalOpen = true;
+            state.editingTag = null;
+        },
+        openEditModal: (state, action: PayloadAction<TagDto>) => {
+            state.isModalOpen = true;
+            state.editingTag = action.payload;
+        },
+        closeModal: (state) => {
+            state.isModalOpen = false;
+            state.editingTag = null;
+        },
+        openDeleteConfirm: (state, action: PayloadAction<TagDto>) => {
+            state.deletingTag = action.payload;
+        },
+        closeDeleteConfirm: (state) => {
+            state.deletingTag = null;
+        },
     },
     extraReducers: (builder) => {
         // Fetch tags
@@ -95,6 +119,8 @@ const tagsSlice = createSlice({
         });
         builder.addCase(addTag.fulfilled, (state, action: PayloadAction<TagDto>) => {
             state.tags.push(action.payload);
+            state.isModalOpen = false;
+            state.editingTag = null;
         });
         builder.addCase(addTag.rejected, (state, action) => {
             state.error = action.payload as string;
@@ -109,6 +135,8 @@ const tagsSlice = createSlice({
             if (index !== -1) {
                 state.tags[index] = action.payload;
             }
+            state.isModalOpen = false;
+            state.editingTag = null;
         });
         builder.addCase(editTag.rejected, (state, action) => {
             state.error = action.payload as string;
@@ -120,6 +148,7 @@ const tagsSlice = createSlice({
         });
         builder.addCase(removeTag.fulfilled, (state, action: PayloadAction<string>) => {
             state.tags = state.tags.filter(tag => tag.id !== action.payload);
+            state.deletingTag = null;
         });
         builder.addCase(removeTag.rejected, (state, action) => {
             state.error = action.payload as string;
@@ -127,5 +156,5 @@ const tagsSlice = createSlice({
     }
 });
 
-export const { clearError } = tagsSlice.actions;
+export const { clearError, openCreateModal, openEditModal, closeModal, openDeleteConfirm, closeDeleteConfirm } = tagsSlice.actions;
 export default tagsSlice.reducer;

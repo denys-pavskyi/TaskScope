@@ -1,47 +1,56 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Button, Card, Empty, Modal } from "antd";
 import { PlusOutlined, CloseCircleOutlined, EditOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { fetchTags, addTag, editTag, removeTag } from "../../store/slices/tagsSlice";
+import { 
+    fetchTags, 
+    addTag, 
+    editTag, 
+    removeTag,
+    openCreateModal,
+    openEditModal,
+    closeModal,
+    openDeleteConfirm,
+    closeDeleteConfirm
+} from "../../store/slices/tagsSlice";
 import { TagModal } from "../../components/public/tag-modal/TagModal";
 import type { TagDto } from "../../models/TagDto";
 import type { CreateTagDto } from "../../models/CreateTagDto";
 import type { UpdateTagDto } from "../../models/UpdateTagDto";
 import "./TagsPage.scss";
 
-const { confirm } = Modal;
-
 export const TagsPage = () => {
     const dispatch = useAppDispatch();
-    const { tags, loading } = useAppSelector((state) => state.tags);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingTag, setEditingTag] = useState<TagDto | undefined>(undefined);
+    const { tags, loading, isModalOpen, editingTag, deletingTag } = useAppSelector((state) => state.tags);
 
     useEffect(() => {
         dispatch(fetchTags());
     }, [dispatch]);
 
     const handleCreateTag = () => {
-        setEditingTag(undefined);
-        setIsModalOpen(true);
+        dispatch(openCreateModal());
     };
 
     const handleEditTag = (tag: TagDto) => {
-        setEditingTag(tag);
-        setIsModalOpen(true);
+        dispatch(openEditModal(tag));
     };
 
     const handleDeleteTag = (tag: TagDto) => {
-        confirm({
-            title: 'Delete Tag',
-            content: `Are you sure you want to delete "${tag.name}"?`,
-            okText: 'Delete',
-            okType: 'danger',
-            cancelText: 'Cancel',
-            onOk: async () => {
-                await dispatch(removeTag(tag.id));
-            },
-        });
+        dispatch(openDeleteConfirm(tag));
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!deletingTag) return;
+        
+        try {
+            await dispatch(removeTag(deletingTag.id)).unwrap();
+        } catch (error) {
+            console.error('Failed to delete tag:', error);
+        }
+    };
+
+    const handleCancelDelete = () => {
+        dispatch(closeDeleteConfirm());
     };
 
     const handleModalSubmit = async (tagData: CreateTagDto | UpdateTagDto) => {
@@ -53,8 +62,7 @@ export const TagsPage = () => {
     };
 
     const handleModalClose = () => {
-        setIsModalOpen(false);
-        setEditingTag(undefined);
+        dispatch(closeModal());
     };
 
     return (
@@ -106,14 +114,20 @@ export const TagsPage = () => {
                                     <Button
                                         type="text"
                                         icon={<EditOutlined />}
-                                        onClick={() => handleEditTag(tag)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleEditTag(tag);
+                                        }}
                                         className="edit-button"
                                     />
                                     <Button
                                         type="text"
                                         danger
                                         icon={<CloseCircleOutlined />}
-                                        onClick={() => handleDeleteTag(tag)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDeleteTag(tag);
+                                        }}
                                         className="delete-button"
                                     />
                                 </div>
@@ -127,8 +141,21 @@ export const TagsPage = () => {
                 open={isModalOpen}
                 onClose={handleModalClose}
                 onSubmit={handleModalSubmit}
-                tag={editingTag}
+                tag={editingTag || undefined}
             />
+
+            <Modal
+                title="Delete Tag"
+                open={!!deletingTag}
+                onOk={handleConfirmDelete}
+                onCancel={handleCancelDelete}
+                okText="Delete"
+                cancelText="Cancel"
+                okButtonProps={{ danger: true, loading: loading }}
+                cancelButtonProps={{ disabled: loading }}
+            >
+                <p>Are you sure you want to delete "{deletingTag?.name}"?</p>
+            </Modal>
         </div>
     );
 };

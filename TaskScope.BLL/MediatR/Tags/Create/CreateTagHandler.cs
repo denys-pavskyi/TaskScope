@@ -24,6 +24,7 @@ public class CreateTagHandler : IRequestHandler<CreateTagCommand, Result<TagDto>
     public async Task<Result<TagDto>> Handle(CreateTagCommand request, CancellationToken cancellationToken)
     {
         var tagEntity = _mapper.Map<Tag>(request.NewTag);
+        tagEntity.CreatedAt = DateTime.UtcNow;
         var createdTag = await _repositoryWrapper.TagRepository.CreateAsync(tagEntity);
         var createdTagDto = _mapper.Map<TagDto>(createdTag);
 

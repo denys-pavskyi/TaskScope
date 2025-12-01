@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState, useMemo } from "react";
+import { useEffect, useCallback, useMemo } from "react";
 import "./TodayPage.scss";
 import type { TaskEntityDto } from "../../models/TaskEntityDto";
 import type { CreateTaskDto } from "../../models/CreateTaskDto";
@@ -9,7 +9,15 @@ import { TaskModal } from "../../components/public/task-modal/TaskModal";
 import { message } from "antd";
 import { CheckCircleOutlined, ClockCircleOutlined, InboxOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { fetchTodayTasks, changeTaskStatus, addTask, editTask } from "../../store/slices/tasksSlice";
+import { 
+    fetchTodayTasks, 
+    changeTaskStatus, 
+    addTask, 
+    editTask,
+    openCreateTaskModal,
+    openEditTaskModal,
+    closeTaskModal
+} from "../../store/slices/tasksSlice";
 import type { TasksGroupedByStatus } from "../../models/TasksGroupedByStatus";
 import addPostIcon from "../../assets/add-post.png";
 
@@ -35,9 +43,7 @@ const COLUMN_ORDER: (keyof TasksGroupedByStatus)[] = ['Todo', 'InProgress', 'Don
 
 export const TodayPage = () => {
     const dispatch = useAppDispatch();
-    const { todayTasks, loading } = useAppSelector((state) => state.tasks);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingTask, setEditingTask] = useState<TaskEntityDto | undefined>(undefined);
+    const { todayTasks, loading, isModalOpen, editingTask } = useAppSelector((state) => state.tasks);
 
     // Sort tasks by priority (Critical > High > Medium > Low)
     const sortedTasks = useMemo(() => {
@@ -66,13 +72,15 @@ export const TodayPage = () => {
     }, [dispatch]);
 
     const handleOpenModal = (task?: TaskEntityDto) => {
-        setEditingTask(task);
-        setIsModalOpen(true);
+        if (task) {
+            dispatch(openEditTaskModal(task));
+        } else {
+            dispatch(openCreateTaskModal());
+        }
     };
 
     const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setEditingTask(undefined);
+        dispatch(closeTaskModal());
     };
 
     const handleSubmitTask = async (taskData: CreateTaskDto | UpdateTaskDto) => {
@@ -120,7 +128,7 @@ export const TodayPage = () => {
                 open={isModalOpen}
                 onClose={handleCloseModal}
                 onSubmit={handleSubmitTask}
-                task={editingTask}
+                task={editingTask || undefined}
             />
         </div>
     );

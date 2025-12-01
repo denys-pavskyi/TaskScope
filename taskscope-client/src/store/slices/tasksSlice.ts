@@ -12,6 +12,8 @@ interface TasksState {
     upcomingTasks: TaskEntityDto[];
     loading: boolean;
     error: string | null;
+    isModalOpen: boolean;
+    editingTask: TaskEntityDto | null;
 }
 
 const initialState: TasksState = {
@@ -22,7 +24,9 @@ const initialState: TasksState = {
     },
     upcomingTasks: [],
     loading: false,
-    error: null
+    error: null,
+    isModalOpen: false,
+    editingTask: null,
 };
 
 // thunks
@@ -92,7 +96,19 @@ const tasksSlice = createSlice({
     reducers: {
         clearError: (state) => {
             state.error = null;
-        }
+        },
+        openCreateTaskModal: (state) => {
+            state.isModalOpen = true;
+            state.editingTask = null;
+        },
+        openEditTaskModal: (state, action: PayloadAction<TaskEntityDto>) => {
+            state.isModalOpen = true;
+            state.editingTask = action.payload;
+        },
+        closeTaskModal: (state) => {
+            state.isModalOpen = false;
+            state.editingTask = null;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchTodayTasks.pending, (state) => {
@@ -157,6 +173,8 @@ const tasksSlice = createSlice({
                 const statusKey = TaskEntityStatus[newTask.status] as keyof TasksGroupedByStatus;
                 state.todayTasks[statusKey].push(newTask);
             }
+            state.isModalOpen = false;
+            state.editingTask = null;
         });
         builder.addCase(addTask.rejected, (state, action) => {
             state.error = action.payload as string;
@@ -197,6 +215,8 @@ const tasksSlice = createSlice({
                     state.upcomingTasks.push(updatedTask);
                 }
             }
+            state.isModalOpen = false;
+            state.editingTask = null;
         });
         builder.addCase(editTask.rejected, (state, action) => {
             state.error = action.payload as string;
@@ -204,5 +224,5 @@ const tasksSlice = createSlice({
     }
 });
 
-export const { clearError } = tasksSlice.actions;
+export const { clearError, openCreateTaskModal, openEditTaskModal, closeTaskModal } = tasksSlice.actions;
 export default tasksSlice.reducer;

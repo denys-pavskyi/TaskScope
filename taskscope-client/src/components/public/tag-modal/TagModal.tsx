@@ -36,7 +36,7 @@ export const TagModal = ({ open, onClose, onSubmit, tag }: TagModalProps) => {
         try {
             const values = await form.validateFields();
             const tagData: CreateTagDto | UpdateTagDto = {
-                ...(isEditing && { id: tag.id }),
+                ...(isEditing && { id: tag.id, createdAt: tag.createdAt }),
                 name: values.name,
                 color: values.color,
             };
@@ -75,7 +75,7 @@ export const TagModal = ({ open, onClose, onSubmit, tag }: TagModalProps) => {
                     name="name"
                     rules={[
                         { required: true, message: "Please enter tag name" },
-                        { max: 50, message: "Tag name must be less than 50 characters" }
+                        { max: 20, message: "Tag name must be less than 20 characters" }
                     ]}
                 >
                     <Input placeholder="Enter tag name" />
