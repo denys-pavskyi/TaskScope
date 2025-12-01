@@ -4,9 +4,9 @@ import type { TaskEntityDto } from "../../models/TaskEntityDto";
 import type { CreateTaskDto } from "../../models/CreateTaskDto";
 import type { UpdateTaskDto } from "../../models/UpdateTaskDto";
 import { TaskEntityStatus } from "../../models/enums/TaskEntityStatus";
-import { TaskCard } from "../../components/public/task-card/TaskCard";
+import { TaskColumn } from "../../components/public/task-column/TaskColumn";
 import { TaskModal } from "../../components/public/task-modal/TaskModal";
-import { Card, Badge, message } from "antd";
+import { message } from "antd";
 import { CheckCircleOutlined, ClockCircleOutlined, InboxOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchTodayTasks, changeTaskStatus, addTask, editTask } from "../../store/slices/tasksSlice";
@@ -90,50 +90,29 @@ export const TodayPage = () => {
         }
     };
 
-    if (loading) return <div className="today-page">Loading...</div>;
+    if (loading) return <div className="tasks-page">Loading...</div>;
 
     return (
-        <div className="today-page">
-            <div className="today-page-header">
+        <div className="tasks-page">
+            <div className="tasks-page-header">
                 <button className="add-task-button" onClick={() => handleOpenModal()}>
                     <img src={addPostIcon} alt="Add task" />
                     <span>Add</span>
                 </button>
-                <h1 className="today-page-title">Today</h1>
+                <h1 className="tasks-page-title">Today</h1>
             </div>
-            <div className="today-page-columns">
+            <div className="tasks-page-columns">
                 {COLUMN_ORDER.map((status) => (
-                        <Card 
-                            key={status}
-                            className="task-column"
-                            title={
-                                <div className="column-header">
-                                    {columnConfig[status as keyof typeof columnConfig].icon}
-                                    <span className="column-title">{status}</span>
-                                    <Badge 
-                                        count={sortedTasks[status].length} 
-                                        style={{ 
-                                            backgroundColor: columnConfig[status as keyof typeof columnConfig].badge,
-                                            marginLeft: 'auto'
-                                        }} 
-                                    />
-                                </div>
-                            }
-                            style={{ 
-                                backgroundColor: columnConfig[status as keyof typeof columnConfig].color
-                            }}
-                        >
-                            <div className="task-list">
-                            {sortedTasks[status].map((task: TaskEntityDto) => (
-                                <TaskCard 
-                                    key={task.id}
-                                    task={task}
-                                    onStatusChange={handleTaskStatusChange}
-                                    onEdit={handleOpenModal}
-                                />
-                            ))}
-                        </div>
-                        </Card>
+                    <TaskColumn
+                        key={status}
+                        title={status}
+                        icon={columnConfig[status as keyof typeof columnConfig].icon}
+                        tasks={sortedTasks[status]}
+                        color={columnConfig[status as keyof typeof columnConfig].color}
+                        badgeColor={columnConfig[status as keyof typeof columnConfig].badge}
+                        onStatusChange={handleTaskStatusChange}
+                        onEdit={handleOpenModal}
+                    />
                 ))}
             </div>
             

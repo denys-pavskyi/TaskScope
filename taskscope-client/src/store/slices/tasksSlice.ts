@@ -168,7 +168,10 @@ const tasksSlice = createSlice({
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             
-            // Find and remove task from old status
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            // Update today's tasks
             const oldStatusKey = (Object.entries(state.todayTasks).find(([_, tasks]) =>
                 tasks.some((t: TaskEntityDto) => t.id === updatedTask.id)
             )?.[0]) as keyof TasksGroupedByStatus | undefined;
@@ -180,6 +183,18 @@ const tasksSlice = createSlice({
                 if (!updatedTask.dueDate || new Date(updatedTask.dueDate) <= today) {
                     const newStatusKey = TaskEntityStatus[updatedTask.status] as keyof TasksGroupedByStatus;
                     state.todayTasks[newStatusKey].push(updatedTask);
+                }
+            }
+            
+            // Update upcoming tasks
+            const upcomingTaskIndex = state.upcomingTasks.findIndex(t => t.id === updatedTask.id);
+            if (upcomingTaskIndex !== -1) {
+                // Remove from upcoming tasks
+                state.upcomingTasks = state.upcomingTasks.filter(t => t.id !== updatedTask.id);
+                
+                // Only add back if it's still an upcoming task (future date)
+                if (updatedTask.dueDate && new Date(updatedTask.dueDate) >= tomorrow) {
+                    state.upcomingTasks.push(updatedTask);
                 }
             }
         });
