@@ -5,10 +5,11 @@ import type { TaskEntityDto } from "../../models/TaskEntityDto";
 import type { CreateTaskDto } from "../../models/CreateTaskDto";
 import type { UpdateTaskDto } from "../../models/UpdateTaskDto";
 import { TaskEntityStatus } from "../../models/enums/TaskEntityStatus";
-import { getTodaysTasks, updateTaskStatus, createTask, updateTask } from "../../services/tasksService";
+import { getTodaysTasks, getUpcomingTasks, updateTaskStatus, createTask, updateTask } from "../../services/tasksService";
 
 interface TasksState {
     todayTasks: TasksGroupedByStatus;
+    upcomingTasks: TaskEntityDto[];
     loading: boolean;
     error: string | null;
 }
@@ -19,6 +20,7 @@ const initialState: TasksState = {
         InProgress: [],
         Done: []
     },
+    upcomingTasks: [],
     loading: false,
     error: null
 };
@@ -32,6 +34,18 @@ export const fetchTodayTasks = createAsyncThunk(
             return result;
         } catch (error) {
             return rejectWithValue('Failed to fetch tasks');
+        }
+    }
+);
+
+export const fetchUpcomingTasks = createAsyncThunk(
+    'tasks/fetchUpcomingTasks',
+    async (_, { rejectWithValue }) => {
+        try {
+            const result = await getUpcomingTasks();
+            return result;
+        } catch (error) {
+            return rejectWithValue('Failed to fetch upcoming tasks');
         }
     }
 );
@@ -90,6 +104,20 @@ const tasksSlice = createSlice({
             state.todayTasks = action.payload;
         });
         builder.addCase(fetchTodayTasks.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string;
+        });
+
+        // Fetch upcoming tasks
+        builder.addCase(fetchUpcomingTasks.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        });
+        builder.addCase(fetchUpcomingTasks.fulfilled, (state, action: PayloadAction<TaskEntityDto[]>) => {
+            state.loading = false;
+            state.upcomingTasks = action.payload;
+        });
+        builder.addCase(fetchUpcomingTasks.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload as string;
         });

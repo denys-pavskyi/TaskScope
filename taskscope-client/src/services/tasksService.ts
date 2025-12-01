@@ -10,6 +10,11 @@ export async function getTodaysTasks(): Promise<TasksGroupedByStatus> {
     return response.data;
 }
 
+export async function getUpcomingTasks(): Promise<TaskEntityDto[]> {
+    const response = await apiClient.get(`/Tasks/upcoming`);
+    return response.data;
+}
+
 export async function updateTaskStatus(taskId: string, newStatus: TaskEntityStatus): Promise<TaskEntityDto> {
     const response = await apiClient.patch(`/Tasks/updateStatus`, null, {
         params: {
