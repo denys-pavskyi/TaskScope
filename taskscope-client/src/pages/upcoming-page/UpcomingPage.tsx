@@ -91,6 +91,7 @@ export const UpcomingPage = () => {
                 await dispatch(editTask(taskData)).unwrap();
                 message.success('Task updated successfully');
             }
+            await dispatch(fetchUpcomingTasks());
         } catch (error) {
             message.error('Failed to save task');
             throw error;

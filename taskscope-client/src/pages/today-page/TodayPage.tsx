@@ -92,6 +92,7 @@ export const TodayPage = () => {
                 await dispatch(addTask(taskData)).unwrap();
                 message.success('Task created successfully');
             }
+            await dispatch(fetchTodayTasks());
         } catch (error) {
             message.error('Failed to save task');
             throw error;
