@@ -9,7 +9,9 @@ import type { UpdateTaskDto } from "../../../models/tasks/UpdateTaskDto";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { fetchTags } from "../../../store/slices/tagsSlice";
 import { linkTagToTask, unlinkTagFromTask } from "../../../store/slices/taskTagsSlice";
+import { deleteTask, openDeleteConfirm, closeDeleteConfirm } from "../../../store/slices/tasksSlice";
 import dayjs from 'dayjs';
+import binIcon from "../../../assets/bin.png";
 import "./TaskModal.scss";
 
 const { TextArea } = Input;
@@ -28,13 +30,14 @@ export const TaskModal = ({ open, onClose, onSubmit, task }: TaskModalProps) => 
     const dispatch = useAppDispatch();
     const { tags } = useAppSelector(state => state.tags);
     const { loading: taskTagsLoading } = useAppSelector(state => state.taskTags);
+    const { isDeleteConfirmOpen } = useAppSelector(state => state.tasks);
     const isEditing = !!task;
 
     useEffect(() => {
         if (open) {
             dispatch(fetchTags());
             if (task && task.id !== initialTaskId) {
-                // Only reset form when it's a different task or new modal open
+                // only reset form when it's a different task or new modal open
                 setInitialTaskId(task.id);
                 form.setFieldsValue({
                     title: task.title,
@@ -100,17 +103,35 @@ export const TaskModal = ({ open, onClose, onSubmit, task }: TaskModalProps) => 
         tag => !task?.tags.some(taskTag => taskTag.id === tag.id)
     );
 
+    const handleDeleteClick = () => {
+        if (isEditing && task) {
+            dispatch(openDeleteConfirm());
+        }
+    };
+
+    const handleConfirmDelete = async () => {
+        if (isEditing && task) {
+            await dispatch(deleteTask(task.id));
+            onClose();
+        }
+    };
+
+    const handleCancelDelete = () => {
+        dispatch(closeDeleteConfirm());
+    };
+
     return (
-        <Modal
-            title={isEditing ? "Edit Task" : "Create New Task"}
-            open={open}
-            onOk={handleSubmit}
-            onCancel={handleCancel}
-            okText={isEditing ? "Update" : "Create"}
-            cancelText="Cancel"
-            width={600}
-            className="task-modal"
-        >
+        <>
+            <Modal
+                title={isEditing ? "Edit Task" : "Create New Task"}
+                open={open}
+                onOk={handleSubmit}
+                onCancel={handleCancel}
+                okText={isEditing ? "Update" : "Create"}
+                cancelText="Cancel"
+                width={600}
+                className="task-modal"
+            >
             <Form
                 form={form}
                 layout="vertical"
@@ -242,7 +263,34 @@ export const TaskModal = ({ open, onClose, onSubmit, task }: TaskModalProps) => 
                         )}
                     </div>
                 )}
+
+                {isEditing && (
+                    <div className="delete-task-section">
+                        <Button 
+                            danger 
+                            block 
+                            size="large"
+                            onClick={handleDeleteClick}
+                            icon={<img src={binIcon} alt="" className="delete-button-icon" />}
+                        >
+                            Delete Task
+                        </Button>
+                    </div>
+                )}
             </Form>
         </Modal>
+
+        <Modal
+            title="Delete Task"
+            open={isDeleteConfirmOpen}
+            onOk={handleConfirmDelete}
+            onCancel={handleCancelDelete}
+            okText="Delete"
+            cancelText="Cancel"
+            okButtonProps={{ danger: true }}
+        >
+            <p>Are you sure you want to delete this task?</p>
+        </Modal>
+        </>
     );
 };

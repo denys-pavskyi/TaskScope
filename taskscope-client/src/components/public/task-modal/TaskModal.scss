@@ -5,6 +5,20 @@
         gap: 16px;
     }
 
+    .delete-task-section {
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid #303030;
+
+        .delete-button-icon {
+            width: 27px;
+            height: 27px;
+            margin-right: 3px;
+            display: block;
+            object-fit: contain;
+        }
+    }
+
     .task-tags-section {
         margin-bottom: 24px;
 
